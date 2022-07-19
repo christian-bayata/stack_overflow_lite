@@ -1,3 +1,3 @@
-# email_template_with_typescript_and_ejs
+# stack_overflow_lite
 
-> API that facilitates email sending with typescript and ejs
+> API that implements the basic features of stack overflow
