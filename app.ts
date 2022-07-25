@@ -1,7 +1,8 @@
 import express, { Application, Request, Response } from "express";
 const port = process.env.PORT || 3000;
-import dbInit from "./init";
+import dbInit from "./config/init";
 import router from "./routes/index";
+import ErrorHandler from "./utils/errorHandler";
 
 /* connect to the database */
 dbInit();
@@ -20,6 +21,11 @@ export const setupExpress = () => {
 
   app.use("/api/v1", router);
 
+  // Error Handler middleware
+  app.use((error: any, res: Response) => {
+    return ErrorHandler.fatalError({ res, error });
+  });
+
   return app;
 };
 
@@ -35,12 +41,3 @@ export const startExpress = () => {
 };
 
 startExpress();
-
-// sequelizeConnection
-//   .authenticate()
-//   .then(() => {
-//     console.log("Connected to database successfully");
-//   })
-//   .catch((err) => {
-//     console.log(`Unable to connect to database: ${err}`);
-//   });

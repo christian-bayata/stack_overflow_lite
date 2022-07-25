@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-import { User, Question, Answer, Subscription } from "./models/index";
+import { User, Question, Answer, Subscription } from "../models/index";
 
 const isDev = process.env.NODE_ENV === "development";
 const isTest = process.env.NODE_ENV !== "test";
