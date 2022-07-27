@@ -2,7 +2,7 @@ import express, { Application, Request, Response } from "express";
 const port = process.env.PORT || 3000;
 import dbInit from "./config/init";
 import router from "./routes/index";
-import ErrorHandler from "./utils/errorHandler";
+import ResponseHandler from "./utils/responseHandler";
 
 /* connect to the database */
 dbInit();
@@ -19,11 +19,11 @@ export const setupExpress = () => {
     return res.status(200).send({ message: "Welcome to stack overflow lite API!" });
   });
 
-  app.use("/api/v1", router);
+  app.use("/api", router);
 
   // Error Handler middleware
   app.use((error: any, res: Response) => {
-    return ErrorHandler.fatalError({ res, error });
+    return ResponseHandler.fatalError({ res, error });
   });
 
   return app;

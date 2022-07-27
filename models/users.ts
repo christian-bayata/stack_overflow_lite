@@ -57,7 +57,7 @@ User.init(
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
     },
     firstName: {
@@ -71,6 +71,7 @@ User.init(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -82,7 +83,6 @@ User.init(
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     city: {
       type: DataTypes.STRING,
