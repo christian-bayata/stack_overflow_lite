@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../config/config";
 
 interface AnswerAttributes {
-  id: number;
+  id: string;
   answer: string;
   views: number;
   upvotes: number;
@@ -17,7 +17,7 @@ export interface AnswerInput extends Optional<AnswerAttributes, "id" | "views" |
 export interface AnswerOutput extends Required<AnswerAttributes> {}
 
 class Answer extends Model<AnswerAttributes, AnswerInput> implements AnswerAttributes {
-  public id!: number;
+  public id!: string;
   public answer!: string;
   public views: number;
   public upvotes: number;
@@ -50,8 +50,8 @@ Answer.init(
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
     },
     answer: {
       type: DataTypes.STRING,

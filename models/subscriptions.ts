@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../config/config";
 
 interface SubscriptionAttributes {
-  id: number;
+  id: string;
   questionId: number;
   userId: number;
 }
@@ -13,7 +13,7 @@ export interface SubscriptionInput extends Optional<SubscriptionAttributes, "id"
 export interface SubscriptionOutput extends Required<SubscriptionAttributes> {}
 
 class Subscription extends Model<SubscriptionAttributes, SubscriptionInput> implements SubscriptionAttributes {
-  public id: number;
+  public id: string;
   public questionId: number;
   public userId: number;
 }
@@ -23,8 +23,8 @@ Subscription.init(
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
     },
     userId: {
       type: DataTypes.INTEGER,

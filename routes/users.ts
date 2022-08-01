@@ -10,4 +10,8 @@ usersRouter.post("/signup", usersMiddleware.signupValidation, usersMiddleware.va
 
 usersRouter.post("/login", usersMiddleware.validateUserLogin, usersMiddleware.validateUserLogin, usersController.login);
 
+usersRouter.post("/forgot-password", usersController.forgotPassword);
+
+usersRouter.post("/password/reset/:token", usersController.resetPassword);
+
 export default usersRouter;

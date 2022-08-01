@@ -2,45 +2,45 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../config/config";
 
-interface CodeAttributes {
-  id: number;
+interface PasswordTokenAttributes {
+  id: string;
   email: string;
-  code: string;
+  token: string;
 }
 
-export interface CodeInput extends Optional<CodeAttributes, "id"> {}
+export interface PasswordTokenInput extends Optional<PasswordTokenAttributes, "id"> {}
 
-export interface CodeOutput extends Required<CodeAttributes> {}
+export interface PasswordTokenOutput extends Required<PasswordTokenAttributes> {}
 
-class Code extends Model<CodeAttributes, CodeInput> implements CodeAttributes {
-  public id!: number;
+class PasswordToken extends Model<PasswordTokenAttributes, PasswordTokenInput> implements PasswordTokenAttributes {
+  public id!: string;
   public email!: string;
-  public code!: string;
+  public token!: string;
 
   public readonly createdAt!: Date;
   public readonly deletedAt!: Date;
 
   static associate(models: any) {
     // define association here
-    Code.belongsTo(models.User, {
+    PasswordToken.belongsTo(models.User, {
       foreignKey: "userId",
     });
   }
 }
 
-Code.init(
+PasswordToken.init(
   {
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    code: {
+    token: {
       type: DataTypes.STRING,
     },
   },
@@ -50,4 +50,4 @@ Code.init(
   }
 );
 
-export default Code;
+export default PasswordToken;

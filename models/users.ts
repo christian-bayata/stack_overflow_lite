@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../config/config";
 
 interface UserAttributes {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -20,7 +20,7 @@ export interface UserInput extends Optional<UserAttributes, "id" | "reputation" 
 export interface UserOutput extends Required<UserAttributes> {}
 
 class User extends Model<UserAttributes, UserInput> implements UserAttributes {
-  public id!: number;
+  public id!: string;
   public firstName!: string;
   public lastName!: string;
   public email!: string;
@@ -57,8 +57,8 @@ User.init(
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
     },
     firstName: {
       type: DataTypes.STRING,

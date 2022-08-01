@@ -6,6 +6,7 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import helper from "../utils/helper";
+import { sendEmail } from "../utils/sendMail";
 
 /** Get verification code for user */
 const getVerificationCode = async (req: Request, res: Response) => {
@@ -61,7 +62,7 @@ const login = async (req: Request, res: AdditionalResponse) => {
 
   try {
     const userExists = await usersQueries.findEmail({ email: data.email });
-    if (!userExists) return ResponseHandler.badRequest({ res, error: "Sorry, this user does not exist" });
+    if (!userExists) return ResponseHandler.badRequest({ res, error: "Sorry, you do not have an account with us" });
 
     /* validate user password with bcrypt */
     const validPassword = bcrypt.compareSync(data.password, userExists.password);
@@ -85,11 +86,60 @@ const login = async (req: Request, res: AdditionalResponse) => {
 };
 
 /* Forgot password */
-const forgotPassword = async (req: Request, res: AdditionalResponse) => {};
+const forgotPassword = async (req: Request, res: AdditionalResponse) => {
+  const { email } = req.body;
+
+  try {
+    const userExists = await usersQueries.findEmail({ email });
+    if (!userExists) return ResponseHandler.badRequest({ res, error: "Sorry, you do not have an account with us" });
+
+    /* Send password token to user email */
+    const token = crypto.randomBytes(3).toString("hex").toUpperCase();
+    const generateResetToken = await usersQueries.createToken({ email, token });
+
+    //Create reset password url
+    const resetUrl = `${req.protocol}://${req.get("host")}/api/password/reset/${generateResetToken.token}`;
+
+    //Set the password reset email message for client
+    const message = `This is your password reset token: \n\n${resetUrl}\n\nIf you have not requested this email, then ignore it`;
+
+    //The reset token email
+    await sendEmail({ email: userExists.email, subject: "Password Recovery", message });
+
+    return res.json({ message: "Password token sent" });
+  } catch (error) {
+    console.log(error);
+    return ResponseHandler.fatalError({ res });
+  }
+};
+
+const resetPassword = async (req: Request, res: Response) => {
+  const { password, confirmPassword } = req.body;
+  const { token } = req.params;
+
+  try {
+    const userToken = await usersQueries.findToken({ token });
+    if (!userToken) return ResponseHandler.badRequest({ res, error: "Invalid token" });
+
+    /* Confirm if the passwords are the same */
+    if (confirmPassword !== password) return ResponseHandler.badRequest({ res, error: "Passwords do not match" });
+
+    /* Update user password */
+    const getUser = await usersQueries.findEmail({ email: userToken.email });
+
+    const [updatePassword, deleteToken] = await Promise.all([await getUser?.update({ password: bcrypt.hashSync(password, 10) }), await usersQueries.deleteToken({ token: userToken?.token })]);
+
+    return res.json({ message: "Password has been successfully reset " });
+  } catch (error) {
+    console.log(error);
+    return ResponseHandler.fatalError({ res });
+  }
+};
 
 export default {
   getVerificationCode,
   signup,
   login,
   forgotPassword,
+  resetPassword,
 };

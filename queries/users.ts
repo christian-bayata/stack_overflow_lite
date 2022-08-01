@@ -34,6 +34,22 @@ const createVerCode = async (data: any) => {
   return await models.Code.create(data);
 };
 
+const createToken = async (data: any) => {
+  return await models.PasswordToken.create(data);
+};
+
+const findToken = async (where: any) => {
+  return await models.PasswordToken.findOne({ where });
+};
+
+const updateUserData = async (data: any, where: any) => {
+  return await models.User.update(data, { where });
+};
+
+const deleteToken = async (where: any) => {
+  return await models.PasswordToken.destroy({ where });
+};
+
 export default {
   findUserEmailAndPhone,
   findVerCodeAndEmail,
@@ -41,4 +57,8 @@ export default {
   createUserAndDeleteToken,
   findEmail,
   createVerCode,
+  createToken,
+  findToken,
+  updateUserData,
+  deleteToken,
 };
