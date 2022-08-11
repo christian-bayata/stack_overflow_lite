@@ -10,6 +10,10 @@ class ResponseHandler {
     return res.status(status).json({ success: true, message });
   }
 
+  public static notFound({ res, status = 404, error = "Resource not found" }: { res: Response; status?: number; error?: string }) {
+    return res.status(status).json({ success: false, error });
+  }
+
   public static badRequest({ res, status = 400, error = "Operation failed" }: { res: Response; status?: number; error?: string }) {
     return res.status(status).json({ success: false, error });
   }

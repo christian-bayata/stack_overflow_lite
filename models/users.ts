@@ -13,6 +13,7 @@ interface UserAttributes {
   address: string;
   city: string;
   state: string;
+  userTypes: string;
 }
 
 export interface UserInput extends Optional<UserAttributes, "id" | "reputation" | "address"> {}
@@ -30,6 +31,7 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
   public address: string;
   public city!: string;
   public state!: string;
+  public userTypes: string;
 
   static associate(models: any) {
     // define association here
@@ -93,6 +95,9 @@ User.init(
       allowNull: false,
     },
     phone: {
+      type: DataTypes.STRING,
+    },
+    userTypes: {
       type: DataTypes.STRING,
     },
   },

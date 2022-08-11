@@ -50,6 +50,10 @@ const deleteToken = async (where: any) => {
   return await models.PasswordToken.destroy({ where });
 };
 
+const findUser = async (where: any) => {
+  return await models.User.destroy({ where });
+};
+
 export default {
   findUserEmailAndPhone,
   findVerCodeAndEmail,
@@ -61,4 +65,5 @@ export default {
   findToken,
   updateUserData,
   deleteToken,
+  findUser,
 };

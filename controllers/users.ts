@@ -63,6 +63,7 @@ const login = async (req: Request, res: AdditionalResponse) => {
   try {
     const userExists = await usersQueries.findEmail({ email: data.email });
     if (!userExists) return ResponseHandler.badRequest({ res, error: "Sorry, you do not have an account with us" });
+    console.log(userExists);
 
     /* validate user password with bcrypt */
     const validPassword = bcrypt.compareSync(data.password, userExists.password);

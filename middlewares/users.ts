@@ -4,6 +4,8 @@ import ResponseHandler from "../utils/responseHandler";
 import { AdditionalResponse } from "../extensions/response";
 import usersQueries from "../queries/users";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { JwtPayload } from "../extensions/response";
 
 const signupValidation = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
   const payload = req.body;
@@ -21,6 +23,7 @@ const signupValidation = async (req: Request, res: AdditionalResponse, next: Nex
       city: Joi.string().min(5).max(30).required().error(new Error("City information must be valid")),
       state: Joi.string().min(5).max(30).required().error(new Error("State must be valid")),
       verCode: Joi.string().max(6).required().error(new Error("Please provide your verification code")),
+      userTypes: Joi.string().min(3).required().error(new Error("Please provide your user type")),
     });
 
     const { error, value } = schema.validate(payload);
@@ -74,8 +77,35 @@ const validateUserLogin = async (req: Request, res: AdditionalResponse, next: Ne
   }
 };
 
+const authenticateUser = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
+  const { authorization } = req.headers;
+
+  // JWT decode - id/email in the user token;
+  try {
+    var decoded = jwt.verify(authorization as string, process.env.JWT_SECRET as string) as JwtPayload;
+    if (!authorization || !decoded.id || !decoded.email) return ResponseHandler.unAuthorized({ res, error: "Unauthorized, please login." });
+
+    // Get the user information
+    const getUser = await usersQueries.findUser({ id: decoded.id });
+    console.log("Get User: ", getUser);
+    if (!getUser) return ResponseHandler.notFound({ res, error: "User not found" });
+
+    //const privileges = getUser.userTypes.split(",");
+
+    //const admin = privileges.includes("admin");
+    //const user = privileges.includes("user");
+
+    res.user = getUser;
+    //res.admin = admin;
+    return next();
+  } catch (error) {
+    return { error };
+  }
+};
+
 export default {
   signupValidation,
   validateExistingUser,
   validateUserLogin,
+  authenticateUser,
 };

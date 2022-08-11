@@ -8,7 +8,7 @@ interface QuestionAttributes {
   views: number;
   upvotes: number;
   downvotes: number;
-  userId: number;
+  userId: string;
 }
 
 export interface QuestionInput extends Optional<QuestionAttributes, "id" | "views" | "upvotes" | "downvotes" | "userId"> {}
@@ -21,7 +21,7 @@ class Question extends Model<QuestionAttributes, QuestionInput> implements Quest
   public views: number;
   public upvotes: number;
   public downvotes: number;
-  public userId!: number;
+  public userId!: string;
   static associate(models: any) {
     // define association here
     Question.hasMany(models.Answer, {
@@ -68,7 +68,8 @@ Question.init(
       defaultValue: 0,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       allowNull: false,
     },
   },

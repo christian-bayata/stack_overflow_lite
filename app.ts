@@ -1,5 +1,5 @@
 import express, { Application, Request, Response } from "express";
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 import dbInit from "./config/init";
 import router from "./routes/index";
 import ResponseHandler from "./utils/responseHandler";
