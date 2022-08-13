@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../config/config";
 
 interface AnswerAttributes {
-  id: string;
+  id: number;
   answer: string;
   views: number;
   upvotes: number;
@@ -17,13 +17,14 @@ export interface AnswerInput extends Optional<AnswerAttributes, "id" | "views" |
 export interface AnswerOutput extends Required<AnswerAttributes> {}
 
 class Answer extends Model<AnswerAttributes, AnswerInput> implements AnswerAttributes {
-  public id!: string;
+  public id!: number;
   public answer!: string;
   public views: number;
   public upvotes: number;
   public downvotes: number;
   public userId!: number;
   public questionId: number;
+
   static associate(models: any) {
     // define association here
     Answer.hasMany(models.Answer, {
@@ -39,7 +40,14 @@ class Answer extends Model<AnswerAttributes, AnswerInput> implements AnswerAttri
     Answer.belongsToMany(models.User, {
       through: "Subscription",
       as: "users_subscriptions",
-      foreignKey: "questionId",
+      foreignKey: "answerId",
+      otherKey: "userId",
+    });
+
+    Answer.belongsToMany(models.User, {
+      through: "VoteAnswer",
+      as: "voters_details",
+      foreignKey: "answerId",
       otherKey: "userId",
     });
   }
@@ -50,8 +58,8 @@ Answer.init(
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
     },
     answer: {
       type: DataTypes.STRING,

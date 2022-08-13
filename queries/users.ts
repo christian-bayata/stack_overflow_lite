@@ -51,7 +51,11 @@ const deleteToken = async (where: any) => {
 };
 
 const findUser = async (where: any) => {
-  return await models.User.destroy({ where });
+  return await models.User.findOne({ where });
+};
+
+const incOrDecReputation = async (userId: number, flag: string) => {
+  return flag == "downvote" ? await models.User.decrement({ reputation: 2 }, { where: { id: userId } }) : await models.User.increment({ reputation: 2 }, { where: { id: userId } });
 };
 
 export default {
@@ -66,4 +70,5 @@ export default {
   updateUserData,
   deleteToken,
   findUser,
+  incOrDecReputation,
 };

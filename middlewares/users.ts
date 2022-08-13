@@ -87,16 +87,15 @@ const authenticateUser = async (req: Request, res: AdditionalResponse, next: Nex
 
     // Get the user information
     const getUser = await usersQueries.findUser({ id: decoded.id });
-    console.log("Get User: ", getUser);
     if (!getUser) return ResponseHandler.notFound({ res, error: "User not found" });
 
-    //const privileges = getUser.userTypes.split(",");
+    const privileges = getUser?.userTypes?.split(",");
 
-    //const admin = privileges.includes("admin");
-    //const user = privileges.includes("user");
+    const admin = privileges.includes("admin");
+    const user = privileges.includes("user");
 
     res.user = getUser;
-    //res.admin = admin;
+    res.admin = admin;
     return next();
   } catch (error) {
     return { error };

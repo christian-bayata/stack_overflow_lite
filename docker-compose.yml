@@ -1,4 +1,7 @@
 version: "3.8"
+networks:
+  app-tier:
+    driver: bridge
 
 services:
   nodejs:
@@ -9,11 +12,8 @@ services:
     container_name: nodejs_stack_container
     restart: always
     env_file: .env
-
     ports:
-      - "8000:8000"
-    expose:
-      - "8000"
+      - "7000:7000"
 
   db:
     image: mysql:8.0.28
@@ -21,11 +21,15 @@ services:
     restart: always
     env_file: .env
     environment:
+      MYSQL_USER: "bayata"
       MYSQL_DATABASE: "stackDB"
       MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_PASSWORD: "password"
+    networks:
+      - app-tier
     ports:
-      - "3307:3307"
+      - "3306:3306"
     security_opt:
       - seccomp:unconfined
     expose:
-      - "3307"
+      - "3306"

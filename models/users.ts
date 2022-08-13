@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../config/config";
 
 interface UserAttributes {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -21,7 +21,7 @@ export interface UserInput extends Optional<UserAttributes, "id" | "reputation" 
 export interface UserOutput extends Required<UserAttributes> {}
 
 class User extends Model<UserAttributes, UserInput> implements UserAttributes {
-  public id!: string;
+  public id!: number;
   public firstName!: string;
   public lastName!: string;
   public email!: string;
@@ -51,6 +51,20 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
       foreignKey: "userId",
       otherKey: "questionId",
     });
+
+    User.belongsToMany(models.Question, {
+      through: "VoteQuestion",
+      as: "questions_votes",
+      foreignKey: "userId",
+      otherKey: "questionId",
+    });
+
+    User.belongsToMany(models.Answer, {
+      through: "VoteAnswer",
+      as: "answers_votes",
+      foreignKey: "userId",
+      otherKey: "questionId",
+    });
   }
 }
 
@@ -59,8 +73,8 @@ User.init(
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
     },
     firstName: {
       type: DataTypes.STRING,

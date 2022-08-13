@@ -1,8 +1,8 @@
 {
-  "name": "email_template_with_ejs",
+  "name": "stack_overflow_lite",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "An app that contains some basic features of stack overflow",
+  "main": "app.ts",
   "scripts": {
     "dev": "tsnd --respawn app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"

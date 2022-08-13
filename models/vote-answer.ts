@@ -2,23 +2,23 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../config/config";
 
-interface SubscriptionAttributes {
+interface VoteAnswerAttributes {
   id: number;
-  questionId: number;
+  answerId: number;
   userId: number;
 }
 
-export interface SubscriptionInput extends Optional<SubscriptionAttributes, "id" | "questionId" | "userId"> {}
+export interface VoteAnswerInput extends Optional<VoteAnswerAttributes, "id" | "answerId" | "userId"> {}
 
-export interface SubscriptionOutput extends Required<SubscriptionAttributes> {}
+export interface VoteAnswerOutput extends Required<VoteAnswerAttributes> {}
 
-class Subscription extends Model<SubscriptionAttributes, SubscriptionInput> implements SubscriptionAttributes {
+class VoteAnswer extends Model<VoteAnswerAttributes, VoteAnswerInput> implements VoteAnswerAttributes {
   public id: number;
-  public questionId: number;
+  public answerId: number;
   public userId: number;
 }
 
-Subscription.init(
+VoteAnswer.init(
   {
     id: {
       allowNull: false,
@@ -30,7 +30,7 @@ Subscription.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    questionId: {
+    answerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -41,4 +41,4 @@ Subscription.init(
   }
 );
 
-export default Subscription;
+export default VoteAnswer;

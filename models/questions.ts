@@ -3,12 +3,12 @@ import { DataTypes, Model, Optional } from "sequelize";
 import sequelizeConnection from "../config/config";
 
 interface QuestionAttributes {
-  id: string;
+  id: number;
   question: string;
   views: number;
   upvotes: number;
   downvotes: number;
-  userId: string;
+  userId: number;
 }
 
 export interface QuestionInput extends Optional<QuestionAttributes, "id" | "views" | "upvotes" | "downvotes" | "userId"> {}
@@ -16,12 +16,13 @@ export interface QuestionInput extends Optional<QuestionAttributes, "id" | "view
 export interface QuestionOutput extends Required<QuestionAttributes> {}
 
 class Question extends Model<QuestionAttributes, QuestionInput> implements QuestionAttributes {
-  public id!: string;
+  public id!: number;
   public question!: string;
   public views: number;
   public upvotes: number;
   public downvotes: number;
-  public userId!: string;
+  public userId!: number;
+
   static associate(models: any) {
     // define association here
     Question.hasMany(models.Answer, {
@@ -40,6 +41,13 @@ class Question extends Model<QuestionAttributes, QuestionInput> implements Quest
       foreignKey: "questionId",
       otherKey: "userId",
     });
+
+    Question.belongsToMany(models.User, {
+      through: "VoteQuestion",
+      as: "voters-details",
+      foreignKey: "questionId",
+      otherKey: "userId",
+    });
   }
 }
 
@@ -48,8 +56,8 @@ Question.init(
     id: {
       allowNull: false,
       primaryKey: true,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
     },
     question: {
       type: DataTypes.STRING,
@@ -68,8 +76,7 @@ Question.init(
       defaultValue: 0,
     },
     userId: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },

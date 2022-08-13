@@ -1,11 +1,11 @@
 import express, { Application, Request, Response } from "express";
-const port = process.env.PORT || 8000;
-import dbInit from "./config/init";
+const port = process.env.PORT || 7000;
+//import dbInit from "./config/init";
 import router from "./routes/index";
 import ResponseHandler from "./utils/responseHandler";
 
 /* connect to the database */
-dbInit();
+//dbInit();
 
 export const setupExpress = () => {
   const app: Application = express();

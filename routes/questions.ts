@@ -6,4 +6,8 @@ const questionsRouter = Router();
 
 questionsRouter.post("/create", usersMiddlewares.authenticateUser, questionsController.create);
 
+questionsRouter.post("/count-question-views", questionsController.questionsViews);
+
+questionsRouter.post("/vote-question", usersMiddlewares.authenticateUser, questionsController.questionsVotes);
+
 export default questionsRouter;
