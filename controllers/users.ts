@@ -88,6 +88,7 @@ const login = async (req: Request, res: AdditionalResponse) => {
 
 /* Forgot password */
 const forgotPassword = async (req: Request, res: AdditionalResponse) => {
+  const { data } = res;
   const { email } = req.body;
 
   try {
@@ -114,7 +115,8 @@ const forgotPassword = async (req: Request, res: AdditionalResponse) => {
   }
 };
 
-const resetPassword = async (req: Request, res: Response) => {
+const resetPassword = async (req: Request, res: AdditionalResponse) => {
+  const { data } = res;
   const { password, confirmPassword } = req.body;
   const { token } = req.params;
 

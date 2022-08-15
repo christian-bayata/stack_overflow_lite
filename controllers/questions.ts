@@ -7,8 +7,8 @@ import usersQueries from "../queries/users";
 import { publishToQueue } from "../services/rabbitMq";
 
 const create = async (req: Request, res: AdditionalResponse) => {
-  const { queueName, question } = req.body;
-  const { user } = res;
+  const { user, data } = res;
+  const { question } = req.body;
   if (!user) return ResponseHandler.badRequest({ res, error: "Unauthenticated user" });
 
   try {

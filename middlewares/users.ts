@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "../extensions/response";
 
-const verCodeValidation = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
+const EmailValidation = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
   const payload = req.body;
 
   try {
@@ -121,10 +121,31 @@ const authenticateUser = async (req: Request, res: AdditionalResponse, next: Nex
   }
 };
 
+const resetPasswordValidation = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
+  const payload = req.body;
+
+  try {
+    const schema = Joi.object({
+      password: Joi.string().min(7).required().error(new Error("Please provide password and it must be greater than 7")),
+      confirmPassword: Joi.string().min(7).required().error(new Error("Please provide your password again")),
+    });
+    const { error, value } = schema.validate(payload);
+    if (error) {
+      return ResponseHandler.badRequest({ res, error: error.message });
+    }
+
+    res.data = value;
+    return next();
+  } catch (error) {
+    return error;
+  }
+};
+
 export default {
-  verCodeValidation,
+  EmailValidation,
   signupValidation,
   validateExistingUser,
   validateUserLogin,
   authenticateUser,
+  resetPasswordValidation,
 };
