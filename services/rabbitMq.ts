@@ -10,11 +10,13 @@ amqp.connect(connectionString, function (err: any, conn: any) {
 
 /********************** Publish to queue *****************************/
 export const publishToQueue = async (queueName: string, data: any) => {
+  console.log(" [x] Sent %s", data);
   return ch.sendToQueue(queueName, Buffer.from(JSON.stringify(data)), { persistent: true });
 };
 
 /********************** Consume from queue *****************************/
 export const consumeFromQueue = async (queueName: string, data: any) => {
+  console.log(" [x] Received %s", data.content.toString());
   return ch.consume(queueName, data.content.toString(), { noAck: true });
 };
 

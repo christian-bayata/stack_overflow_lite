@@ -14,9 +14,6 @@ const create = async (req: Request, res: AdditionalResponse) => {
   try {
     const theQuestion = await questionsQueries.createQuestion({ question, userId: user.id });
 
-    /************** Send question to rabbitMQ queue ******************/
-    await publishToQueue("question_queue", { question });
-
     return res.json({ message: "Question sent successfully ", question: theQuestion });
   } catch (error) {
     console.log(error);

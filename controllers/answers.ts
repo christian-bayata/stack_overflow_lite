@@ -12,7 +12,7 @@ const create = async (req: Request, res: AdditionalResponse) => {
 
   try {
     /************** Send question and answer to rabbitMQ queue ******************/
-    await publishToQueue("question_queue", { questionId });
+    await publishToQueue("QUESTION", { questionId });
 
     const theAnswer = await answersQueries.createAnswer({ answer, questionId });
 
