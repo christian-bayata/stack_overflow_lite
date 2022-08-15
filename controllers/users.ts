@@ -9,7 +9,8 @@ import helper from "../utils/helper";
 import { sendEmail } from "../utils/sendMail";
 
 /** Get verification code for user */
-const getVerificationCode = async (req: Request, res: Response) => {
+const getVerificationCode = async (req: Request, res: AdditionalResponse) => {
+  const { data } = res;
   const { email } = req.body;
 
   try {

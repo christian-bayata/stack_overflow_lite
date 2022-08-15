@@ -1,3 +1,4 @@
+import "express-async-errors";
 import { Request, Response } from "express";
 import { AdditionalResponse } from "../extensions/response";
 import ResponseHandler from "../utils/responseHandler";

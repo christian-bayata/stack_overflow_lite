@@ -7,6 +7,25 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "../extensions/response";
 
+const verCodeValidation = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
+  const payload = req.body;
+
+  try {
+    const schema = Joi.object({
+      email: Joi.string().email().lowercase().required().error(new Error("Please provide email and/or email must be a valid email")),
+    });
+    const { error, value } = schema.validate(payload);
+    if (error) {
+      return ResponseHandler.badRequest({ res, error: error.message });
+    }
+
+    res.data = value;
+    return next();
+  } catch (error) {
+    return error;
+  }
+};
+
 const signupValidation = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
   const payload = req.body;
 
@@ -103,6 +122,7 @@ const authenticateUser = async (req: Request, res: AdditionalResponse, next: Nex
 };
 
 export default {
+  verCodeValidation,
   signupValidation,
   validateExistingUser,
   validateUserLogin,

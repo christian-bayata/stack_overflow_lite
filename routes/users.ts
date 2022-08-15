@@ -4,7 +4,7 @@ import usersController from "../controllers/users";
 
 const usersRouter = Router();
 
-usersRouter.post("/get-verification-code", usersController.getVerificationCode);
+usersRouter.post("/get-verification-code", usersMiddleware.verCodeValidation, usersController.getVerificationCode);
 
 usersRouter.post("/signup", usersMiddleware.signupValidation, usersMiddleware.validateExistingUser, usersController.signup);
 
