@@ -7,10 +7,8 @@ const create = async (req: Request, res: AdditionalResponse) => {
   const { user } = res;
   const { questionId, answer } = req.body;
   if (!user) return ResponseHandler.unAuthorized({ res, error: "Unauthenticated user" });
-
-  if (questionId) return;
 };
 
-module.exports = {
+export default {
   create,
 };
