@@ -24,7 +24,8 @@ const create = async (req: Request, res: AdditionalResponse) => {
   }
 };
 
-const questionsViews = async (req: Request, res: Response) => {
+const questionsViews = async (req: Request, res: AdditionalResponse) => {
+  const { data } = res;
   const { questionId } = req.body;
 
   try {
@@ -41,7 +42,7 @@ const questionsViews = async (req: Request, res: Response) => {
 };
 
 const questionsVotes = async (req: Request, res: AdditionalResponse) => {
-  const { user } = res;
+  const { user, data } = res;
   const { questionId, flag } = req.body;
   if (!user) return ResponseHandler.unAuthorized({ res, error: "Unauthenticated user" });
 
@@ -64,7 +65,7 @@ const questionsVotes = async (req: Request, res: AdditionalResponse) => {
 };
 
 const updateQuestion = async (req: Request, res: AdditionalResponse) => {
-  const { user } = res;
+  const { user, data } = res;
   const { questionId } = req.query;
   if (!user) return ResponseHandler.unAuthorized({ res, error: "Unauthenticated user" });
 
