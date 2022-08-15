@@ -25,6 +25,28 @@ const validateCreateAnswer = async (req: Request, res: AdditionalResponse, next:
   }
 };
 
+const validateAnswer = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
+  const payload = req.body;
+
+  try {
+    const schema = Joi.object({
+      answerId: Joi.number().required().error(new Error("Please input the answer id")),
+    });
+
+    const { error, value } = schema.validate(payload);
+
+    if (error) {
+      return ResponseHandler.badRequest({ res, error: error.message });
+    }
+
+    res.data = value;
+    return next();
+  } catch (error) {
+    return error;
+  }
+};
+
 export default {
   validateCreateAnswer,
+  validateAnswer,
 };

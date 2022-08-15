@@ -23,6 +23,24 @@ const create = async (req: Request, res: AdditionalResponse) => {
   }
 };
 
+const answersViews = async (req: Request, res: AdditionalResponse) => {
+  const { data } = res;
+  const { answerId } = req.body;
+
+  try {
+    const theAnswer = await answersQueries.findAnswer({ id: answerId });
+    if (!theAnswer) return ResponseHandler.notFound({ res, error: "The answer is not available" });
+
+    await answersQueries.countAnswerViews(answerId);
+
+    return res.json({ message: "Answer views have been updated" });
+  } catch (error) {
+    console.log(error);
+    return ResponseHandler.fatalError({ res });
+  }
+};
+
 export default {
   create,
+  answersViews,
 };

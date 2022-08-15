@@ -29,7 +29,7 @@ const validateQuestion = async (req: Request, res: AdditionalResponse, next: Nex
 
   try {
     const schema = Joi.object({
-      questionId: Joi.string().required().error(new Error("Please input the question id")),
+      questionId: Joi.number().required().error(new Error("Please input the question id")),
     });
 
     const { error, value } = schema.validate(payload);
