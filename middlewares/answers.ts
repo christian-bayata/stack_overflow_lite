@@ -8,7 +8,7 @@ const validateCreateAnswer = async (req: Request, res: AdditionalResponse, next:
 
   try {
     const schema = Joi.object({
-      questionId: Joi.string().required().error(new Error("Please provide question Id")),
+      questionId: Joi.number().required().error(new Error("Please provide question Id")),
       answer: Joi.string().required().error(new Error("Please provide your answer")),
     });
 

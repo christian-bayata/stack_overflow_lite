@@ -11,12 +11,12 @@ const create = async (req: Request, res: AdditionalResponse) => {
   if (!user) return ResponseHandler.unAuthorized({ res, error: "Unauthenticated user" });
 
   try {
+    const theAnswer = questionId && user.id ? await answersQueries.updateAnswer({ answer }, { questionId, userId: user.id }) : await answersQueries.createAnswer({ answer, questionId, userId: user.id });
+
     /************** Send question and answer to rabbitMQ queue ******************/
     await publishToQueue("QUESTION", { questionId });
 
-    const theAnswer = await answersQueries.createAnswer({ answer, questionId });
-
-    return res.json({ theAnswer });
+    return res.json({ message: "Successfully answered question", theAnswer });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });
