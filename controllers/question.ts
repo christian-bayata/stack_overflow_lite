@@ -3,14 +3,18 @@ import { AdditionalResponse } from "../extensions/response";
 import ResponseHandler from "../utils/responseHandler";
 import questionsQueries from "../queries/questions";
 import usersQueries from "../queries/users";
+import { publishToQueue } from "../services/rabbitMq";
 
 const create = async (req: Request, res: AdditionalResponse) => {
-  const { question } = req.body;
+  const { queueName, question } = req.body;
   const { user } = res;
   if (!user) return ResponseHandler.badRequest({ res, error: "Unauthenticated user" });
 
   try {
     const theQuestion = await questionsQueries.createQuestion({ question, userId: user.id });
+
+    /************** Send question to rabbitMQ queue ******************/
+    await publishToQueue("question_queue", { question });
 
     return res.json({ message: "Question sent successfully ", question: theQuestion });
   } catch (error) {
