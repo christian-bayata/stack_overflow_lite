@@ -16,7 +16,7 @@ const countQuestionViews = async (questionId: number) => {
 
 const voteQuestion = async (data: any, questionId: number, flag: string) => {
   try {
-    await sequelizeConnection.transaction(async (t: Transaction) => {
+    return await sequelizeConnection.transaction(async (t: Transaction) => {
       await models.VoteQuestion.create(data, { transaction: t });
       flag == "downvote" ? await models.Question.increment({ downvotes: 1 }, { where: { id: questionId } }) : await models.Question.increment({ upvotes: 1 }, { where: { id: questionId } });
     });

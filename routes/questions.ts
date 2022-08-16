@@ -9,7 +9,7 @@ questionsRouter.post("/create", usersMiddlewares.authenticateUser, questionsMidd
 
 questionsRouter.post("/count-question-views", questionsMiddleware.validateQuestion, questionsController.questionsViews);
 
-questionsRouter.post("/vote-question", usersMiddlewares.authenticateUser, questionsMiddleware.validateQuestion, questionsController.questionsVotes);
+questionsRouter.post("/vote-question", usersMiddlewares.authenticateUser, questionsController.questionsVotes);
 
 questionsRouter.post("/update-question", usersMiddlewares.authenticateUser, questionsMiddleware.validateQuestion, questionsController.updateQuestion);
 
