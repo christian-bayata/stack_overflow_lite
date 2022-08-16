@@ -73,8 +73,29 @@ const answersVotes = async (req: Request, res: AdditionalResponse) => {
   }
 };
 
+const updateAnswer = async (req: Request, res: AdditionalResponse) => {
+  const { user } = res;
+  const { answerId } = req.query;
+
+  if (!user) return ResponseHandler.unAuthorized({ res, error: "Unauthenticated user" });
+  if (!answerId) return ResponseHandler.badRequest({ res, error: "Please provide the answer ID" });
+
+  try {
+    const getAnswer = await answersQueries.findAnswer({ id: answerId });
+    if (!getAnswer) return ResponseHandler.notFound({ res, error: "The answer you selected is not available" });
+
+    const updateAnswer = await getAnswer.update({ answer: req.body.answer });
+
+    return res.json({ message: "Successfully updated answer", updateAnswer });
+  } catch (error) {
+    console.log(error);
+    return ResponseHandler.fatalError({ res });
+  }
+};
+
 export default {
   create,
   answersViews,
   answersVotes,
+  updateAnswer,
 };

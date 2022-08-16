@@ -7,7 +7,7 @@ import usersQueries from "../queries/users";
 import { publishToQueue } from "../services/rabbitMq";
 
 const create = async (req: Request, res: AdditionalResponse) => {
-  const { user, data } = res;
+  const { user } = res;
   const { question } = req.body;
   if (!user) return ResponseHandler.badRequest({ res, error: "Unauthenticated user" });
 
@@ -25,6 +25,7 @@ const questionsViews = async (req: Request, res: AdditionalResponse) => {
   const { data } = res;
   const { questionId } = req.body;
 
+  if (!questionId) return ResponseHandler.badRequest({ res, error: "Please provide the question ID" });
   try {
     const theQuestion = await questionsQueries.findQuestion({ id: questionId });
     if (!theQuestion) return ResponseHandler.notFound({ res, error: "The question you selected is not available" });
@@ -62,7 +63,7 @@ const questionsVotes = async (req: Request, res: AdditionalResponse) => {
 };
 
 const updateQuestion = async (req: Request, res: AdditionalResponse) => {
-  const { user, data } = res;
+  const { user } = res;
   const { questionId } = req.query;
   if (!user) return ResponseHandler.unAuthorized({ res, error: "Unauthenticated user" });
 

@@ -11,4 +11,6 @@ answersRouter.post("/count-answer-views", answersMiddlewares.validateAnswer, ans
 
 answersRouter.post("/vote-answer", usersMiddlewares.authenticateUser, answersController.answersVotes);
 
+answersRouter.patch("/update-answer", usersMiddlewares.authenticateUser, answersController.updateAnswer);
+
 export default answersRouter;
