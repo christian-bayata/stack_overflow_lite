@@ -1,16 +1,18 @@
 import models from "../models/index";
 import { Transaction } from "sequelize";
 import sequelizeConnection from "../config/config";
+import { VerificationCodeDto } from "../extensions/dto/codes.dto";
+import { UserSignUpDto } from "../extensions/dto/users.dto";
 
 const findUserEmailAndPhone = async (where: any) => {
   return await models.User.findOne({ where });
 };
 
-const findEmail = async (where: any) => {
+const findEmail = async (where: any): Promise<UserSignUpDto | null> => {
   return await models.User.findOne({ where });
 };
 
-const findVerCodeAndEmail = async (where: any) => {
+const findVerCodeAndEmail = async (where: any): Promise<VerificationCodeDto | null> => {
   return await models.Code.findOne({ where });
 };
 
@@ -18,13 +20,15 @@ const deleteVerCode = async (where: any) => {
   return await models.Code.destroy({ where });
 };
 
-const createUserAndDeleteToken = async (data: any, where: any) => {
+const createUserAndDeleteToken = async (data: UserSignUpDto, where: any) => {
   try {
-    await sequelizeConnection.transaction(async (t: Transaction) => {
-      await models.User.create(data, { transaction: t });
+    const createdUserData = await sequelizeConnection.transaction(async (t: Transaction) => {
+      const theCreatedUser = await models.User.create(data, { transaction: t });
       await models.Code.destroy({ where });
-      return;
+
+      return theCreatedUser;
     });
+    return { createdUserData };
   } catch (error: any) {
     return { error };
   }

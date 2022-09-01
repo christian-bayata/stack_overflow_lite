@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import helper from "../utils/helper";
 import { sendEmail } from "../utils/sendMail";
+import { UserSignUpDto } from "../extensions/dto/users.dto";
 
 /** Get verification code for user */
 const getVerificationCode = async (req: Request, res: AdditionalResponse) => {
@@ -37,7 +38,7 @@ const signup = async (req: Request, res: AdditionalResponse) => {
   }
 
   // Ensure that a user cannot use the verification code after 30 minutes
-  const timeDiff = Number(Date.now() - confirmVerCode?.createdAt?.getTime());
+  const timeDiff = Number(Date.now() - confirmVerCode.createdAt.getTime());
   const timeDiffInMins = Number(timeDiff / (1000 * 60));
 
   if (timeDiffInMins > 30) {
@@ -47,12 +48,12 @@ const signup = async (req: Request, res: AdditionalResponse) => {
 
   try {
     // Create user account and delete verification code
-    const userData = await usersQueries.createUserAndDeleteToken(data, { email: data.email, code: data.verCode });
+    const { createdUserData, error } = await usersQueries.createUserAndDeleteToken(data, { email: data.email, code: data.verCode });
 
-    if (userData?.error) return ResponseHandler.badRequest({ res, error: "Could neither sign up new user nor delete token." });
-    return res.json({ userData });
+    if (error) return ResponseHandler.badRequest({ res, error: "Could neither sign up new user nor delete token." });
+    return res.json({ createdUserData });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return ResponseHandler.fatalError({ res });
   }
 };
@@ -130,7 +131,7 @@ const resetPassword = async (req: Request, res: AdditionalResponse) => {
     /* Update user password */
     const getUser = await usersQueries.findEmail({ email: userToken.email });
 
-    const [updatePassword, deleteToken] = await Promise.all([await getUser?.update({ password: bcrypt.hashSync(password, 10) }), await usersQueries.deleteToken({ token: userToken?.token })]);
+    const [updatePassword, deleteToken] = await Promise.all([await usersQueries.updateUserData({ password: bcrypt.hashSync(password, 10) }, { password }), await usersQueries.deleteToken({ token: userToken?.token })]);
 
     return res.json({ message: "Password has been successfully reset " });
   } catch (error) {

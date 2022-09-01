@@ -23,6 +23,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.2.1",
     "amqplib": "^0.10.2",
     "bcrypt": "^5.0.1",
     "crypto": "^1.0.1",
