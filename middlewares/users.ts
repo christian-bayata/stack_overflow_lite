@@ -37,7 +37,7 @@ const signupValidation = async (req: Request, res: AdditionalResponse, next: Nex
       firstName: Joi.string().regex(regexAlpha).min(3).max(15).required().error(new Error("First name must not be empty and must contain only letters")),
       lastName: Joi.string().regex(regexAlpha).min(3).max(15).required().error(new Error("Last name must not be empty and must contain only letters")),
       email: Joi.string().email().lowercase().required().error(new Error("Email must be a valid email")),
-      password: Joi.string().min(7).required().error(new Error("Email must be a valid email")),
+      password: Joi.string().min(7).required().error(new Error("Password must be more than 7 characters")),
       phone: Joi.string().regex(regexPhone).length(11).required().error(new Error("Phone number must be valid")),
       city: Joi.string().min(5).max(30).required().error(new Error("City information must be valid")),
       state: Joi.string().min(5).max(30).required().error(new Error("State must be valid")),

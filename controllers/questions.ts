@@ -14,7 +14,7 @@ const create = async (req: Request, res: AdditionalResponse) => {
   try {
     const theQuestion = await questionsQueries.createQuestion({ question, userId: user.id });
 
-    return res.json({ message: "Question sent successfully ", question: theQuestion });
+    return ResponseHandler.success({ res, message: "Question sent successfully ", data: theQuestion });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });
@@ -32,7 +32,7 @@ const questionsViews = async (req: Request, res: AdditionalResponse) => {
 
     await questionsQueries.countQuestionViews(questionId);
 
-    return res.json({ message: "Question views have been updated" });
+    return ResponseHandler.success({ res, message: "Question views have been updated" });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });
@@ -55,7 +55,7 @@ const questionsVotes = async (req: Request, res: AdditionalResponse) => {
     const id = getQuestion.userId;
     const [theUserVotes, theUserReputation] = await Promise.all([questionsQueries.voteQuestion({ questionId: questionId, userId: user.id }, questionId, flag), usersQueries.incOrDecReputation(id, flag)]);
 
-    return res.json({ message: "Question voted successfully" });
+    return ResponseHandler.success({ res, message: "Question voted successfully" });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });
@@ -75,7 +75,7 @@ const updateQuestion = async (req: Request, res: AdditionalResponse) => {
 
     const updateQuestion = await theQuestion.update({ question: req.body.question });
 
-    return res.json({ message: "Successfully updated question", updateQuestion });
+    return ResponseHandler.success({ res, message: "Successfully updated question", data: updateQuestion });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });

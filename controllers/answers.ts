@@ -18,7 +18,7 @@ const create = async (req: Request, res: AdditionalResponse) => {
     /************** Send question and answer to rabbitMQ queue ******************/
     await publishToQueue("QUESTION", { questionId });
 
-    return res.json({ message: "Successfully answered question", theAnswer });
+    return ResponseHandler.success({ res, message: "Successfully answered question", data: theAnswer });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });
@@ -35,7 +35,7 @@ const answersViews = async (req: Request, res: AdditionalResponse) => {
 
     await answersQueries.countAnswerViews(answerId);
 
-    return res.json({ message: "Answer views have been updated" });
+    return ResponseHandler.success({ res, message: "Answer views have been updated" });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });
@@ -66,7 +66,7 @@ const answersVotes = async (req: Request, res: AdditionalResponse) => {
     /* Reduce the reputation of the voter by 1 */
     const [theUserVotes, theUserReputation] = await Promise.all([answersQueries.voteAnswer({ answerId: answerId, userId: user.id }, answerId, flag), usersQueries.incOrDecReputation(answererId, flag), user.decrement({ reputation: 1 }, { where: { id: voterId } })]);
 
-    return res.json({ message: "Answer has been successfully updated." });
+    return ResponseHandler.success({ res, message: "Answer has been successfully updated." });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });
@@ -86,7 +86,7 @@ const updateAnswer = async (req: Request, res: AdditionalResponse) => {
 
     const updateAnswer = await getAnswer.update({ answer: req.body.answer });
 
-    return res.json({ message: "Successfully updated answer", updateAnswer });
+    return ResponseHandler.success({ res, message: "Successfully updated answer", data: updateAnswer });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });

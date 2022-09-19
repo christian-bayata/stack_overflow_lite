@@ -1,29 +1,29 @@
 require("dotenv").config();
-import { Response } from "express";
-
+import { configureDataInput } from "../interfaces/response.interface";
+import helper from "./helper";
 class ResponseHandler {
-  public static success({ res, status = 200, message = "Operation successful", data = null }: { res: Response; status?: number; message?: string; data: any }) {
-    return res.status(status).json({ success: true, message, data });
+  public static success({ res, status = 200, message = "Ok", data = null }: configureDataInput) {
+    return helper.buildSuccessResponse({ res, status, message, data });
   }
 
-  public static created({ res, status = 201, message = "Successfully created" }: { res: Response; status?: number; message?: string }) {
-    return res.status(status).json({ success: true, message });
+  public static created({ res, status = 201, message = "Created", data }: configureDataInput) {
+    return helper.buildSuccessResponse({ res, status, message, data });
   }
 
-  public static notFound({ res, status = 404, error = "Resource not found" }: { res: Response; status?: number; error?: string }) {
-    return res.status(status).json({ success: false, error });
+  public static notFound({ res, status = 404, error = "Not found" }: configureDataInput) {
+    return helper.buildErrorResponse({ res, status, error });
   }
 
-  public static badRequest({ res, status = 400, error = "Operation failed" }: { res: Response; status?: number; error?: string }) {
-    return res.status(status).json({ success: false, error });
+  public static badRequest({ res, status = 400, error = "Bad request" }: configureDataInput) {
+    return helper.buildErrorResponse({ res, status, error });
   }
 
-  public static unAuthorized({ res, status = 401, error = "Unauthorized" }: { res: Response; status?: number; error?: string }) {
-    return res.status(status).json({ success: false, error });
+  public static unAuthorized({ res, status = 401, error = "Unauthorized" }: configureDataInput) {
+    return helper.buildErrorResponse({ res, status, error });
   }
 
-  public static fatalError({ res, error }: { res: Response; error?: string }) {
-    return res.status(500).json({ success: false, error: "Internal server error" });
+  public static fatalError({ res, status = 500, error = "Intenal server error" }: configureDataInput) {
+    return helper.buildErrorResponse({ res, status, error });
   }
 }
 

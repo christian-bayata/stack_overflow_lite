@@ -7,9 +7,16 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import helper from "../utils/helper";
 import { sendEmail } from "../utils/sendMail";
+import { buildResponseOutput } from "../interfaces/response.interface";
 import { UserSignUpDto } from "../extensions/dto/users.dto";
 
-/** Get verification code for user */
+/**
+ * @Title User verification code
+ * @Param req
+ * @Param res
+ * @Returns Returns the verification code of the user
+ *
+ */
 const getVerificationCode = async (req: Request, res: AdditionalResponse) => {
   const { data } = res;
   const { email } = req.body;
@@ -28,7 +35,13 @@ const getVerificationCode = async (req: Request, res: AdditionalResponse) => {
   }
 };
 
-/** User sign up */
+/**
+ * @Title User sign up
+ * @Param req
+ * @Param res
+ * @Returns Returns the created user details
+ *
+ */
 const signup = async (req: Request, res: AdditionalResponse) => {
   const { data, user } = res;
 
@@ -51,14 +64,21 @@ const signup = async (req: Request, res: AdditionalResponse) => {
     const { createdUserData, error } = await usersQueries.createUserAndDeleteToken(data, { email: data.email, code: data.verCode });
 
     if (error) return ResponseHandler.badRequest({ res, error: "Could neither sign up new user nor delete token." });
-    return res.json({ createdUserData });
+    // return res.json({ createdUserData });
+    return ResponseHandler.created({ res, message: "User scuccessfully created", data: createdUserData });
   } catch (error) {
     //console.log(error);
     return ResponseHandler.fatalError({ res });
   }
 };
 
-/* User Login */
+/**
+ * @Title User Login
+ * @Param req
+ * @Param res
+ * @Returns Returns the user login details
+ *
+ */
 const login = async (req: Request, res: AdditionalResponse) => {
   const { data } = res;
 
@@ -78,16 +98,18 @@ const login = async (req: Request, res: AdditionalResponse) => {
     /* Format and hash user data for security*/
     const protectedData = helper.formatUserData(data);
 
-    return res.json({
-      token,
-      res: protectedData,
-    });
+    return ResponseHandler.success({ res, message: "User scuccessfully Logged in", data: protectedData });
   } catch (error) {
     return ResponseHandler.fatalError({ res });
   }
 };
 
-/* Forgot password */
+/**
+ * @Title Forgot Password
+ * @Param req
+ * @Param res
+ *
+ */
 const forgotPassword = async (req: Request, res: AdditionalResponse) => {
   const { data } = res;
   const { email } = req.body;
@@ -109,7 +131,7 @@ const forgotPassword = async (req: Request, res: AdditionalResponse) => {
     //The reset token email
     await sendEmail({ email: userExists.email, subject: "Password Recovery", message });
 
-    return res.json({ message: "Password token sent" });
+    return ResponseHandler.success({ res, message: "Password token successfully sent" });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });
@@ -133,7 +155,7 @@ const resetPassword = async (req: Request, res: AdditionalResponse) => {
 
     const [updatePassword, deleteToken] = await Promise.all([await usersQueries.updateUserData({ password: bcrypt.hashSync(password, 10) }, { password }), await usersQueries.deleteToken({ token: userToken?.token })]);
 
-    return res.json({ message: "Password has been successfully reset " });
+    return ResponseHandler.success({ res, message: "Password reset successful" });
   } catch (error) {
     console.log(error);
     return ResponseHandler.fatalError({ res });
