@@ -1,6 +1,6 @@
 import "express-async-errors";
 import { Request, Response } from "express";
-import { AdditionalResponse } from "../extensions/response";
+import { AdditionalResponse } from "../interfaces/response.interface";
 import ResponseHandler from "../utils/responseHandler";
 import questionsQueries from "../queries/questions";
 import usersQueries from "../queries/users";

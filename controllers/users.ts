@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AdditionalResponse } from "../extensions/response";
+import { AdditionalResponse } from "../interfaces/response.interface";
 import usersQueries from "../queries/users";
 import ResponseHandler from "../utils/responseHandler";
 import crypto from "crypto";
@@ -7,8 +7,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import helper from "../utils/helper";
 import { sendEmail } from "../utils/sendMail";
-import { buildResponseOutput } from "../interfaces/response.interface";
-import { UserSignUpDto } from "../extensions/dto/users.dto";
+import esRequestsController from "../controllers/esRequests";
+import { esCreateUserDto } from "../extensions/dto/users.dto";
 
 /**
  * @Title User verification code

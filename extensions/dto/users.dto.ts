@@ -11,3 +11,10 @@ export interface UserSignUpDto {
   state: string;
   userTypes: string;
 }
+
+export interface esCreateUserDto {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+}

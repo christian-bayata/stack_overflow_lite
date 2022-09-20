@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
 import ResponseHandler from "../utils/responseHandler";
-import { AdditionalResponse } from "../extensions/response";
+import { AdditionalResponse } from "../interfaces/response.interface";
 import usersQueries from "../queries/users";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { JwtPayload } from "../extensions/response";
+import { JwtPayload } from "../interfaces/user.interface";
 
 const EmailValidation = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
   const payload = req.body;

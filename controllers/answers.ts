@@ -1,6 +1,6 @@
 import "express-async-errors";
 import { Request, Response, NextFunction } from "express";
-import { AdditionalResponse } from "../extensions/response";
+import { AdditionalResponse } from "../interfaces/response.interface";
 import ResponseHandler from "../utils/responseHandler";
 import answersQueries from "../queries/answers";
 import { publishToQueue } from "../services/rabbitMq";
