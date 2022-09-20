@@ -10,7 +10,20 @@ type CreateClientData = {
   email: string;
 };
 
+type clientSubQueryFirstName = {
+  fuzzy: { firstName: string };
+};
+
+type clientSubQueryLasttName = {
+  fuzzy: { lastName: string };
+};
+
 export type ClientIndexDocType = {
   index: string;
   document: CreateClientData;
+};
+
+export type ClientSearchDocType = {
+  index: string;
+  query: clientSubQueryFirstName | clientSubQueryLasttName;
 };

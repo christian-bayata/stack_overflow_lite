@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import ResponseHandler from "../utils/responseHandler";
 import { esClient } from "../config/esClientConfig";
-import { ClientIndexDocType } from "../types/config.types";
+import { ClientIndexDocType, ClientSearchDocType } from "../types/config.types";
 
 /**
  *
- *@param req
- *@param res
+ * @param req
+ * @param res
  * @returns Returns the created elastic search index
  */
 const createESIndex = async (req: Request, res: Response) => {
@@ -17,6 +17,13 @@ const createESIndex = async (req: Request, res: Response) => {
     return ResponseHandler.fatalError({ res, error });
   }
 };
+
+/*****************************************************************************************************************************
+ *
+ **************************************** ELASTIC SEARCH FOR USERS **********************************
+ *
+ ******************************************************************************************************************************
+ */
 
 /**
  *
@@ -44,4 +51,34 @@ const esCreateUsers = async (req: Request, res: Response) => {
   }
 };
 
-export default { esCreateUsers, createESIndex };
+/**
+ *
+ * @param req
+ * @param res
+ * @returns Searches by first and last names and returns the result of the operation
+ */
+const esSearchUserByName = async (req: Request, res: Response) => {
+  const { flag, theName } = req.query;
+
+  const validFlags: any = ["first_name", "last_name"];
+  if (!validFlags.includes(flag)) return ResponseHandler.badRequest({ res, error: "Please provide a valid flag" });
+
+  try {
+    const result =
+      flag == "first_name"
+        ? await esClient.search({
+            index: process.env.ES_CLIENT_INDEX,
+            query: { fuzzy: { firstName: theName } },
+          } as ClientSearchDocType)
+        : await esClient.search({
+            index: process.env.ES_CLIENT_INDEX,
+            query: { fuzzy: { lastName: theName } },
+          } as ClientSearchDocType);
+
+    return ResponseHandler.success({ res, message: `Document(s) successfully found`, data: result.hits.hits });
+  } catch (error: any) {
+    return ResponseHandler.fatalError({ res, error });
+  }
+};
+
+export default { createESIndex, esCreateUsers, esSearchUserByName };

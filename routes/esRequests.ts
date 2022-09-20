@@ -7,4 +7,6 @@ esRouter.post("/create-index", esController.createESIndex);
 
 esRouter.post("/create-user", esController.esCreateUsers);
 
+esRouter.get("/search-user-name", esController.esSearchUserByName);
+
 export default esRouter;
