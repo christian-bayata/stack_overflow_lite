@@ -11,6 +11,6 @@ esRouter.get("/search-user-name", esController.esSearchUserByName);
 
 esRouter.post("/create-question", esController.esCreateQuestion);
 
-esRouter.get("/search-question", esController.esSearchUserByName);
+esRouter.get("/search-question", esController.esSearchQuestion);
 
 export default esRouter;
