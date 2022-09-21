@@ -88,6 +88,12 @@ const esSearchUserByName = async (req: Request, res: Response) => {
  ******************************************************************************************************************************
  */
 
+/**
+ *
+ * @param req
+ * @param res
+ * @returns Returns the result of the created question on elsatic search
+ */
 const esCreateQuestion = async (req: Request, res: Response) => {
   const { op_type } = req.query;
   const { id, question } = req.body;
@@ -108,6 +114,13 @@ const esCreateQuestion = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ *
+ * @param req
+ * @param res
+ * @returns Searches by question and returns the result of the operation
+ */
+
 const esSearchQuestion = async (req: Request, res: Response) => {
   const { query } = req.query;
 
@@ -123,4 +136,59 @@ const esSearchQuestion = async (req: Request, res: Response) => {
   }
 };
 
-export default { createESIndex, esCreateUsers, esSearchUserByName, esCreateQuestion, esSearchQuestion };
+/*****************************************************************************************************************************
+ *
+ **************************************** ELASTIC SEARCH FOR ANSWERS **********************************
+ *
+ ******************************************************************************************************************************
+ */
+
+/**
+ *
+ * @param req
+ * @param res
+ * @returns Returns the result of the created answer on elsatic search
+ */
+const esCreateAnswer = async (req: Request, res: Response) => {
+  const { op_type } = req.query;
+  const { id, answer } = req.body;
+
+  if (!op_type) return ResponseHandler.badRequest({ res, error: "Please provide the operation type" });
+
+  const data = { id, answer };
+
+  try {
+    const result = await esClient.index({
+      index: process.env.ES_CLIENT_INDEX,
+      document: data,
+    } as ClientIndexDocType);
+
+    return ResponseHandler.success({ res, message: `Document successfully inserted into index`, data: result });
+  } catch (error: any) {
+    return ResponseHandler.fatalError({ res, error });
+  }
+};
+
+/**
+ *
+ * @param req
+ * @param res
+ * @returns Searches by answer and returns the result of the operation
+ */
+
+const esSearchAnswer = async (req: Request, res: Response) => {
+  const { query } = req.query;
+
+  try {
+    const result = await esClient.search({
+      index: process.env.ES_CLIENT_INDEX,
+      query: { fuzzy: { answer: query } },
+    } as ClientSearchDocType);
+
+    return ResponseHandler.success({ res, message: `Document(s) successfully found`, data: result.hits.hits });
+  } catch (error: any) {
+    return ResponseHandler.fatalError({ res, error });
+  }
+};
+
+export default { createESIndex, esCreateUsers, esSearchUserByName, esCreateQuestion, esSearchQuestion, esCreateAnswer, esSearchAnswer };

@@ -15,6 +15,11 @@ type CreateClientUQuestionData = {
   question: string;
 };
 
+type CreateClientAnswerData = {
+  id: number;
+  answer: string;
+};
+
 type clientSubQueryFirstName = {
   fuzzy: { firstName: string; fuzziness: "AUTO"; max_expansions: 50; prefix_length: 0; transpositions: true; rewrite: "constant_score" };
 };
@@ -27,12 +32,16 @@ type clientSubQueryQuestion = {
   fuzzy: { question: string; fuzziness: "AUTO"; max_expansions: 50; prefix_length: 0; transpositions: true; rewrite: "constant_score" };
 };
 
+type clientSubQueryAnswer = {
+  fuzzy: { answer: string; fuzziness: "AUTO"; max_expansions: 50; prefix_length: 0; transpositions: true; rewrite: "constant_score" };
+};
+
 export type ClientIndexDocType = {
   index: string;
-  document: CreateClientUserData | CreateClientUQuestionData;
+  document: CreateClientUserData | CreateClientUQuestionData | CreateClientAnswerData;
 };
 
 export type ClientSearchDocType = {
   index: string;
-  query: clientSubQueryFirstName | clientSubQueryLasttName | clientSubQueryQuestion;
+  query: clientSubQueryFirstName | clientSubQueryLasttName | clientSubQueryQuestion | clientSubQueryAnswer;
 };

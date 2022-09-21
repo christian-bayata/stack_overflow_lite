@@ -13,4 +13,8 @@ esRouter.post("/create-question", esController.esCreateQuestion);
 
 esRouter.get("/search-question", esController.esSearchQuestion);
 
+esRouter.post("/create-answer", esController.esCreateAnswer);
+
+esRouter.get("/search-answer", esController.esSearchAnswer);
+
 export default esRouter;
