@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1663944803721" clover="3.2.0">
-  <project timestamp="1663944803722" name="All files">
-    <metrics statements="599" coveredstatements="246" conditionals="89" coveredconditionals="3" methods="139" coveredmethods="5" elements="827" coveredelements="254" complexity="0" loc="599" ncloc="599" packages="9" files="32" classes="32"/>
+<coverage generated="1663946805626" clover="3.2.0">
+  <project timestamp="1663946805626" name="All files">
+    <metrics statements="599" coveredstatements="248" conditionals="89" coveredconditionals="3" methods="139" coveredmethods="7" elements="827" coveredelements="258" complexity="0" loc="599" ncloc="599" packages="9" files="32" classes="32"/>
     <package name="src">
       <metrics statements="22" coveredstatements="20" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="5"/>
       <file name="app.ts" path="/Users/user/Documents/Personal_Projects/stack_overflow-lite/src/app.ts">
@@ -31,9 +31,9 @@
       </file>
     </package>
     <package name="src.config">
-      <metrics statements="19" coveredstatements="16" conditionals="2" coveredconditionals="1" methods="4" coveredmethods="0"/>
+      <metrics statements="19" coveredstatements="17" conditionals="2" coveredconditionals="1" methods="4" coveredmethods="1"/>
       <file name="config.ts" path="/Users/user/Documents/Personal_Projects/stack_overflow-lite/src/config/config.ts">
-        <metrics statements="17" coveredstatements="14" conditionals="2" coveredconditionals="1" methods="4" coveredmethods="0"/>
+        <metrics statements="17" coveredstatements="15" conditionals="2" coveredconditionals="1" methods="4" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
@@ -46,7 +46,7 @@
         <line num="16" count="1" type="stmt"/>
         <line num="18" count="1" type="stmt"/>
         <line num="23" count="1" type="stmt"/>
-        <line num="26" count="0" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
         <line num="33" count="1" type="stmt"/>
         <line num="34" count="0" type="stmt"/>
@@ -657,7 +657,7 @@
       </file>
     </package>
     <package name="src.services">
-      <metrics statements="21" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="0"/>
+      <metrics statements="21" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="1"/>
       <file name="connection.ts" path="/Users/user/Documents/Personal_Projects/stack_overflow-lite/src/services/connection.ts">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
@@ -668,12 +668,12 @@
         <line num="8" count="1" type="stmt"/>
       </file>
       <file name="rabbitMq.ts" path="/Users/user/Documents/Personal_Projects/stack_overflow-lite/src/services/rabbitMq.ts">
-        <metrics statements="15" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="0"/>
+        <metrics statements="15" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
-        <line num="6" count="0" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
         <line num="7" count="0" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
         <line num="13" count="0" type="stmt"/>
