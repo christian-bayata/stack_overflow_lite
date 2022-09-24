@@ -11,13 +11,13 @@ const statusCodes = 200 | 201 | 400 | 401 | 404 | 500;
 const buildSuccessResponse = (options: configureDataInput) => {
   const { res, data, message, status = statusCodes } = options;
 
-  return res.status(status).json({ success: true, message, data });
+  return res.status(status).send({ success: true, message, data });
 };
 
 const buildErrorResponse = (options: configureDataInput) => {
   const { res, error, status = statusCodes } = options;
 
-  return res.status(status).json({ success: false, error });
+  return res.status(status).send({ success: false, error });
 };
 
 export default {

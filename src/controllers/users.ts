@@ -27,6 +27,7 @@ const getVerificationCode = async (req: Request, res: AdditionalResponse) => {
     if (confirmEmail) return ResponseHandler.badRequest({ res, error: "You already have an account with us" });
 
     const verCodeData = { email, code: crypto.randomBytes(3).toString("hex").toUpperCase() };
+    console.log("*********User Vercode payload******", verCodeData);
     const userCode = await usersQueries.createVerCode(verCodeData);
 
     return ResponseHandler.success({ res, message: "Code successfully sent", data: userCode });
@@ -65,7 +66,7 @@ const signup = async (req: Request, res: AdditionalResponse) => {
 
     if (error) return ResponseHandler.badRequest({ res, error: "Could neither sign up new user nor delete token." });
     // return res.json({ createdUserData });
-    return ResponseHandler.created({ res, message: "User scuccessfully created", data: createdUserData });
+    return ResponseHandler.created({ res, message: "User successfully created", data: createdUserData });
   } catch (error) {
     //console.log(error);
     return ResponseHandler.fatalError({ res });

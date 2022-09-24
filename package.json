@@ -5,7 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "dev": "tsnd --respawn ./src/app.ts",
-    "test": "export NODE_ENV=test && NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --coverage --verbose --forceExit --detectOpenHandles"
+    "test": "export NODE_ENV=test && NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --verbose --forceExit --detectOpenHandles"
   },
   "author": "Edomaruse, Frank",
   "license": "ISC",

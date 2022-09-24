@@ -18,3 +18,15 @@ export interface esCreateUserDto {
   lastName: string;
   email: string;
 }
+
+export interface UserPayloadWithVerCode {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+  city: string;
+  state: string;
+  userTypes: string;
+  verCode?: string;
+}

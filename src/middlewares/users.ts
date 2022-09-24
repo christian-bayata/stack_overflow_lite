@@ -39,8 +39,8 @@ const signupValidation = async (req: Request, res: AdditionalResponse, next: Nex
       email: Joi.string().email().lowercase().required().error(new Error("Email must be a valid email")),
       password: Joi.string().min(7).required().error(new Error("Password must be more than 7 characters")),
       phone: Joi.string().regex(regexPhone).length(11).required().error(new Error("Phone number must be valid")),
-      city: Joi.string().min(5).max(30).required().error(new Error("City information must be valid")),
-      state: Joi.string().min(5).max(30).required().error(new Error("State must be valid")),
+      city: Joi.string().min(5).max(30).required().error(new Error("City information must be provided and/or valid")),
+      state: Joi.string().min(5).max(30).required().error(new Error("State must be provided and/or valid")),
       verCode: Joi.string().max(6).required().error(new Error("Please provide your verification code")),
       userTypes: Joi.string().min(3).required().error(new Error("Please provide your user type")),
     });
