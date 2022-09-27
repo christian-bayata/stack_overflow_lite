@@ -27,7 +27,6 @@ const getVerificationCode = async (req: Request, res: AdditionalResponse) => {
     if (confirmEmail) return ResponseHandler.badRequest({ res, error: "You already have an account with us" });
 
     const verCodeData = { email, code: crypto.randomBytes(3).toString("hex").toUpperCase() };
-    console.log("*********User Vercode payload******", verCodeData);
     const userCode = await usersQueries.createVerCode(verCodeData);
 
     return ResponseHandler.success({ res, message: "Code successfully sent", data: userCode });

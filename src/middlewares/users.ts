@@ -67,7 +67,7 @@ const validateExistingUser = async (req: Request, res: AdditionalResponse, next:
       return ResponseHandler.badRequest({ res, error: "User with this email and/or phone number already exists." });
     }
 
-    // Hashs the user password;
+    // Hash the user password;
     res.data.password = bcrypt.hashSync(res.data.password, 10);
 
     res.user = getUser;

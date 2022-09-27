@@ -10,6 +10,8 @@ export interface UserSignUpDto {
   city: string;
   state: string;
   userTypes: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface esCreateUserDto {

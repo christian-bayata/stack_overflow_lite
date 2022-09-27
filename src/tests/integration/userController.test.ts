@@ -4,6 +4,7 @@ export const app = setupApplication();
 import request from "supertest";
 import models from "../../models/index";
 import crypto from "crypto";
+import bcrypt from "bcrypt";
 import { UserPayloadWithVerCode, UserSignUpDto } from "../../extensions/dto/users.dto";
 
 jest.setTimeout(10000);
@@ -91,14 +92,15 @@ describe("User Resource", () => {
     let signupPayload: UserPayloadWithVerCode;
     beforeEach(() => {
       signupPayload = {
-        firstName: "Samuel",
-        lastName: "Adetula",
-        email: "samueladetula@gmail.com",
+        firstName: "lkjhgffghj",
+        lastName: "kjhgfghjkj",
+        email: "kjhgdgfhgjhkjl@gmail.com",
         phone: "08098765432",
-        password: "samuel123",
-        city: "Ogudu",
-        state: "Lagos",
+        password: bcrypt.hashSync("dfiuoghk123", 10),
+        city: "hhfhgjhkjl",
+        state: "gfdgfhgjhkjl",
         userTypes: "user",
+        verCode: crypto.randomBytes(3).toString("hex").toUpperCase(),
       };
     });
 
@@ -211,5 +213,55 @@ describe("User Resource", () => {
         error: "Please provide your user type",
       });
     });
+
+    it("should fail if the user email and verification code cannot be found", async () => {
+      await models.Code.create({ email: "test_email1@gmail.com", code: "ABCDEF" });
+
+      const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(400);
+
+      expect(response.body).toMatchObject({
+        success: false,
+        error: "Invalid verification code or email",
+      });
+    });
+
+    it("should fail if the user verification code exceeds 30 minutes", async () => {
+      const userVerCode = await models.Code.create({ email: "test_email1@gmail.com", code: crypto.randomBytes(3).toString("hex").toUpperCase() });
+
+      const timeDiff = Date.now() - userVerCode.createdAt.getTime();
+
+      if (timeDiff > 30) {
+        const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(400);
+        expect(response.body).toMatchObject({
+          success: false,
+          error: "The verification code has expired, please request another one.",
+        });
+      }
+    });
+
+    it("should fail if the user already exists", async () => {
+      await models.User.create({ firstName: "iuytrertyui", lastName: "hgfddfnb", email: "kjhgdgfhgjhkjl@gmail.com", phone: "08098765432", password: bcrypt.hashSync("oiuytsdghjk535", 10), city: "lkjhgffg", state: "jhgfgh", userTypes: "user" });
+
+      const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(400);
+      expect(response.body).toMatchObject({
+        success: false,
+        error: "User with this email and/or phone number already exists.",
+      });
+    });
+
+    it("should pass if the user supplies all the valid signup details", async () => {
+      const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(200);
+      expect(response.body).toMatchObject({
+        success: true,
+        error: "User successfully created",
+      });
+    });
+
+    /*****************************************************************************************************************************
+     *
+     **************************************** USERS LOGIN **********************************
+     *
+     ******************************************************************************************************************************
+     */
   });
 });
