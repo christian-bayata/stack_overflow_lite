@@ -1,7 +1,7 @@
 import { Router } from "express";
-import usersMiddlewares from "../middlewares/users";
-import questionsController from "../controllers/questions";
-import questionsMiddleware from "../middlewares/questions";
+import usersMiddlewares from "../middlewares/user.middleware";
+import questionsController from "../controllers/question.controller";
+import questionsMiddleware from "../middlewares/question.middleware";
 
 const questionsRouter = Router();
 

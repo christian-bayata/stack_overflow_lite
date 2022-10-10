@@ -1,6 +1,6 @@
 require("dotenv").config();
 import { configureDataInput } from "../interfaces/response.interface";
-import helper from "./helper";
+import helper from "./helper.utils";
 class ResponseHandler {
   public static success({ res, status = 200, message = "Ok", data = null }: configureDataInput) {
     return helper.buildSuccessResponse({ res, status, message, data });

@@ -1,4 +1,4 @@
-import models from "../models/index";
+import models from "../models/index.model";
 import { Transaction } from "sequelize";
 import sequelize from "../config/config";
 import { VerificationCodeDto } from "../extensions/dto/codes.dto";

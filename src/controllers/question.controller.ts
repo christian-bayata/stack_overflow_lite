@@ -1,10 +1,10 @@
 import "express-async-errors";
 import { Request, Response } from "express";
 import { AdditionalResponse } from "../interfaces/response.interface";
-import ResponseHandler from "../utils/responseHandler";
-import questionsQueries from "../queries/questions";
-import usersQueries from "../queries/users";
-import { publishToQueue } from "../services/rabbitMq";
+import ResponseHandler from "../utils/responseHandler.utils";
+import questionRepository from "../repositories/questionRepositories";
+import userRepository from "../repositories/userRepositories";
+import { publishToQueue } from "../ext-services/rabbitMq";
 
 const create = async (req: Request, res: AdditionalResponse) => {
   const { user } = res;
@@ -12,7 +12,7 @@ const create = async (req: Request, res: AdditionalResponse) => {
   if (!user) return ResponseHandler.badRequest({ res, error: "Unauthenticated user" });
 
   try {
-    const theQuestion = await questionsQueries.createQuestion({ question, userId: user.id });
+    const theQuestion = await questionRepository.createQuestion({ question, userId: user.id });
 
     return ResponseHandler.success({ res, message: "Question sent successfully ", data: theQuestion });
   } catch (error) {
@@ -27,10 +27,10 @@ const questionsViews = async (req: Request, res: AdditionalResponse) => {
 
   if (!questionId) return ResponseHandler.badRequest({ res, error: "Please provide the question ID" });
   try {
-    const theQuestion = await questionsQueries.findQuestion({ id: questionId });
+    const theQuestion = await questionRepository.findQuestion({ id: questionId });
     if (!theQuestion) return ResponseHandler.notFound({ res, error: "The question you selected is not available" });
 
-    await questionsQueries.countQuestionViews(questionId);
+    await questionRepository.countQuestionViews(questionId);
 
     return ResponseHandler.success({ res, message: "Question views have been updated" });
   } catch (error) {
@@ -48,12 +48,12 @@ const questionsVotes = async (req: Request, res: AdditionalResponse) => {
   if (!validFlags.includes(flag)) return ResponseHandler.badRequest({ res, error: "Invalid flag" });
 
   try {
-    const getQuestion = await questionsQueries.findQuestion({ id: questionId });
+    const getQuestion = await questionRepository.findQuestion({ id: questionId });
     if (!getQuestion) return ResponseHandler.notFound({ res, error: "The question you selected is not available" });
 
     /***************** Vote Question and impact user reputation ****************/
     const id = getQuestion.userId;
-    const [theUserVotes, theUserReputation] = await Promise.all([questionsQueries.voteQuestion({ questionId: questionId, userId: user.id }, questionId, flag), usersQueries.incOrDecReputation(id, flag)]);
+    const [theUserVotes, theUserReputation] = await Promise.all([questionRepository.voteQuestion({ questionId: questionId, userId: user.id }, questionId, flag), userRepository.incOrDecReputation(id, flag)]);
 
     return ResponseHandler.success({ res, message: "Question voted successfully" });
   } catch (error) {
@@ -70,7 +70,7 @@ const updateQuestion = async (req: Request, res: AdditionalResponse) => {
   if (!questionId) return ResponseHandler.badRequest({ res, error: "Please provide the question ID" });
 
   try {
-    const theQuestion = await questionsQueries.findQuestion({ id: questionId });
+    const theQuestion = await questionRepository.findQuestion({ id: questionId });
     if (!theQuestion) return ResponseHandler.notFound({ res, error: "The question you selected is not available" });
 
     const updateQuestion = await theQuestion.update({ question: req.body.question });

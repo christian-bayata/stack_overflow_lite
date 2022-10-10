@@ -1,6 +1,6 @@
 require("dotenv").config();
 import { Dialect, Sequelize } from "sequelize";
-import models from "../models/index";
+import models from "../models/index.model";
 
 let sequelize: any;
 

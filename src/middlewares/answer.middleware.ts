@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
-import ResponseHandler from "../utils/responseHandler";
-import { AdditionalResponse } from "../../src/interfaces/response.interface";
+import ResponseHandler from "../utils/responseHandler.utils";
+import { AdditionalResponse } from "../interfaces/response.interface";
 
 const validateCreateAnswer = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
   const payload = req.body;

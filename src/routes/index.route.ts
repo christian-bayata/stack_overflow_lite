@@ -1,8 +1,8 @@
 import { Router } from "express";
-import usersRouter from "./users";
-import questionsRouter from "./questions";
-import answersRouter from "./answers";
-import esRouter from "./esRequests";
+import usersRouter from "./user.route";
+import questionsRouter from "./question.route";
+import answersRouter from "./answer.route";
+import esRouter from "./esRequest.route";
 
 const router = Router();
 

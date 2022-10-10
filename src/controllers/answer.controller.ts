@@ -1,11 +1,11 @@
 import "express-async-errors";
 import { Request, Response, NextFunction } from "express";
 import { AdditionalResponse } from "../interfaces/response.interface";
-import ResponseHandler from "../utils/responseHandler";
-import answersQueries from "../queries/answers";
-import { publishToQueue } from "../services/rabbitMq";
-import usersQueries from "../queries/users";
-import questionsQueries from "../queries/questions";
+import ResponseHandler from "../utils/responseHandler.utils";
+import answerRepository from "../repositories/answerRepositories";
+import { publishToQueue } from "../ext-services/rabbitMq";
+import userRepository from "../repositories/userRepositories";
+import questionRepository from "../repositories/questionRepositories";
 
 const create = async (req: Request, res: AdditionalResponse) => {
   const { user } = res;
@@ -13,7 +13,7 @@ const create = async (req: Request, res: AdditionalResponse) => {
   if (!user) return ResponseHandler.unAuthorized({ res, error: "Unauthenticated user" });
 
   try {
-    const theAnswer = questionId && user.id ? await answersQueries.updateAnswer({ answer }, { questionId, userId: user.id }) : await answersQueries.createAnswer({ answer, questionId, userId: user.id });
+    const theAnswer = questionId && user.id ? await answerRepository.updateAnswer({ answer }, { questionId, userId: user.id }) : await answerRepository.createAnswer({ answer, questionId, userId: user.id });
 
     /************** Send question and answer to rabbitMQ queue ******************/
     await publishToQueue("QUESTION", { questionId });
@@ -30,10 +30,10 @@ const answersViews = async (req: Request, res: AdditionalResponse) => {
   const { answerId } = req.body;
 
   try {
-    const theAnswer = await answersQueries.findAnswer({ id: answerId });
+    const theAnswer = await answerRepository.findAnswer({ id: answerId });
     if (!theAnswer) return ResponseHandler.notFound({ res, error: "The answer is not available" });
 
-    await answersQueries.countAnswerViews(answerId);
+    await answerRepository.countAnswerViews(answerId);
 
     return ResponseHandler.success({ res, message: "Answer views have been updated" });
   } catch (error) {
@@ -54,7 +54,7 @@ const answersVotes = async (req: Request, res: AdditionalResponse) => {
   if (!validFlags.includes(flag)) return ResponseHandler.badRequest({ res, error: "Invalid flag" });
 
   try {
-    const getAnswer = await answersQueries.findAnswer({ id: answerId });
+    const getAnswer = await answerRepository.findAnswer({ id: answerId });
     if (!getAnswer) return ResponseHandler.notFound({ res, error: "The question you selected is not available" });
 
     /***************** Vote Answer and impact user reputation ****************/
@@ -64,7 +64,7 @@ const answersVotes = async (req: Request, res: AdditionalResponse) => {
     /* Vote answer */
     /* Reduce reputation of answerer based on votes - either downvotes or upvotes */
     /* Reduce the reputation of the voter by 1 */
-    const [theUserVotes, theUserReputation] = await Promise.all([answersQueries.voteAnswer({ answerId: answerId, userId: user.id }, answerId, flag), usersQueries.incOrDecReputation(answererId, flag), user.decrement({ reputation: 1 }, { where: { id: voterId } })]);
+    const [theUserVotes, theUserReputation] = await Promise.all([answerRepository.voteAnswer({ answerId: answerId, userId: user.id }, answerId, flag), userRepository.incOrDecReputation(answererId, flag), user.decrement({ reputation: 1 }, { where: { id: voterId } })]);
 
     return ResponseHandler.success({ res, message: "Answer has been successfully updated." });
   } catch (error) {
@@ -81,7 +81,7 @@ const updateAnswer = async (req: Request, res: AdditionalResponse) => {
   if (!answerId) return ResponseHandler.badRequest({ res, error: "Please provide the answer ID" });
 
   try {
-    const getAnswer = await answersQueries.findAnswer({ id: answerId });
+    const getAnswer = await answerRepository.findAnswer({ id: answerId });
     if (!getAnswer) return ResponseHandler.notFound({ res, error: "The answer you selected is not available" });
 
     const updateAnswer = await getAnswer.update({ answer: req.body.answer });

@@ -1,6 +1,6 @@
 import { Transaction } from "sequelize/types";
 import sequelize from "../config/config";
-import models from "../models/index";
+import models from "../models/index.model";
 
 const createQuestion = async (data: any) => {
   return await models.Question.create(data);

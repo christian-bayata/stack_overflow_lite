@@ -1,4 +1,4 @@
-import models from "../models";
+import models from "../models/index.model";
 import sequelize from "../config/config";
 import { Transaction } from "sequelize/types";
 

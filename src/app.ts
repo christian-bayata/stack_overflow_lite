@@ -1,8 +1,8 @@
 import express, { Application, Request, Response } from "express";
 const port = process.env.PORT || 7000;
 //import dbInit from "./config/init";
-import router from "../src/routes/index";
-import ResponseHandler from "./utils/responseHandler";
+import router from "./routes/index.route";
+import ResponseHandler from "./utils/responseHandler.utils";
 
 /* connect to the database */
 //dbInit();

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import ResponseHandler from "../utils/responseHandler";
-import { esClient } from "../../src/config/esClientConfig";
+import ResponseHandler from "../utils/responseHandler.utils";
+import { esClient } from "../config/esClientConfig";
 import { ClientIndexDocType, ClientSearchDocType } from "../types/config.types";
 
 /**

@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
-import ResponseHandler from "../utils/responseHandler";
-import { AdditionalResponse } from "../../src/interfaces/response.interface";
-import usersQueries from "../queries/users";
+import ResponseHandler from "../utils/responseHandler.utils";
+import { AdditionalResponse } from "../interfaces/response.interface";
+import userRepository from "../repositories/userRepositories";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { JwtPayload } from "../../src/interfaces/user.interface";
+import { JwtPayload } from "../interfaces/user.interface";
 
 const EmailValidation = async (req: Request, res: AdditionalResponse, next: NextFunction) => {
   const payload = req.body;
@@ -62,7 +62,7 @@ const validateExistingUser = async (req: Request, res: AdditionalResponse, next:
   const { email, phone } = res.data;
 
   try {
-    const getUser = await usersQueries.findUserEmailAndPhone({ email, phone });
+    const getUser = await userRepository.findUserEmailAndPhone({ email, phone });
     if (getUser) {
       return ResponseHandler.badRequest({ res, error: "User with this email and/or phone number already exists." });
     }
@@ -105,7 +105,7 @@ const authenticateUser = async (req: Request, res: AdditionalResponse, next: Nex
     if (!authorization || !decoded.id || !decoded.email) return ResponseHandler.unAuthorized({ res, error: "Unauthorized, please login." });
 
     // Get the user information
-    const getUser = await usersQueries.findUser({ id: decoded.id });
+    const getUser = await userRepository.findUser({ id: decoded.id });
     if (!getUser) return ResponseHandler.notFound({ res, error: "User not found" });
 
     const privileges = getUser?.userTypes?.split(",");

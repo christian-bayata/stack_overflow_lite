@@ -1,5 +1,5 @@
 import { Router } from "express";
-import esController from "../controllers/esRequests";
+import esController from "../controllers/esRequest.controller";
 
 const esRouter = Router();
 
