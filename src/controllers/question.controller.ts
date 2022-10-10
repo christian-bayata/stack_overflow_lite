@@ -2,8 +2,8 @@ import "express-async-errors";
 import { Request, Response } from "express";
 import { AdditionalResponse } from "../interfaces/response.interface";
 import ResponseHandler from "../utils/responseHandler.utils";
-import questionRepository from "../repositories/questionRepositories";
-import userRepository from "../repositories/userRepositories";
+import questionRepository from "../repositories/question.repository";
+import userRepository from "../repositories/user.repository";
 import { publishToQueue } from "../ext-services/rabbitMq";
 
 const create = async (req: Request, res: AdditionalResponse) => {

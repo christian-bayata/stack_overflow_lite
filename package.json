@@ -4,7 +4,7 @@
   "description": "An app that contains some basic features of stack overflow",
   "main": "app.ts",
   "scripts": {
-    "dev": "tsnd --respawn ./src/app.ts",
+    "dev": "tsnd --respawn ./src/server.ts",
     "test": "export NODE_ENV=test && NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand --verbose --forceExit --detectOpenHandles"
   },
   "author": "Edomaruse, Frank",

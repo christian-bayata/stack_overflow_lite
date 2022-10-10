@@ -1,9 +1,10 @@
-import { setup as setupApplication } from "../../app";
-import userRepository from "../../repositories/userRepositories";
+//import { setup as setupApplication } from "../../app";
+import server from "../../server";
+import userRepository from "../../repositories/user.repository";
 import sequelize from "../../config/config";
-export const app = setupApplication();
+//export const app = setupApplication();
 import request from "supertest";
-import models from "../../models/index";
+import models from "../../models/index.model";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { UserPayloadWithVerCode, UserSignUpDto } from "../../extensions/dto/users.dto";
@@ -11,26 +12,26 @@ import { UserPayloadWithVerCode, UserSignUpDto } from "../../extensions/dto/user
 jest.setTimeout(10000);
 
 describe("User Resource", () => {
-  let server: any;
-  let port = process.env.TEST_PORT;
+  // let server: any;
+  // let port = process.env.TEST_PORT;
   let BASE_URL = "/api/users";
 
-  const setupTestServer = () => {
-    return app.listen(port, () => console.log(`Listening on testing port ${port}`));
-  };
+  // const setupTestServer = () => {
+  //   return server.listen(port, () => console.log(`Listening on testing port ${port}`));
+  // };
 
-  beforeAll(() => {
-    server = setupTestServer();
-  });
+  // beforeAll(() => {
+  //   return sequelize.sync();
+  // });
 
   beforeEach(async () => {
     await models.Code.truncate({ force: true });
-    //await models.User.truncate({ force: true });
+    await models.User.truncate({ force: true });
   });
 
-  afterAll(async () => {
-    server.close();
-  });
+  // afterAll(async () => {
+  //   server.close();
+  // });
 
   describe("Health Check", () => {
     it("should check for the health of the API", async () => {
@@ -50,9 +51,9 @@ describe("User Resource", () => {
 
   describe("User Verification Code", () => {
     it("should fail if user email already exists", async () => {
-      await models.User.create({ firstName: "Samuel", lastName: "Adetula", email: "samueladetula@gmail.com", phone: "08098765432", password: "samuel123", city: "Ogudu", state: "Lagos", userTypes: "user" });
+      await models.User.create({ firstName: "Samuel", lastName: "Adetula", email: "test1@gmail.com", phone: "08098765432", password: "samuel123", city: "Ogudu", state: "Lagos", userTypes: "user" });
 
-      const payload = { email: "samueladetula@gmail.com" };
+      const payload = { email: "test1@gmail.com" };
 
       const response = await request(server).post(`${BASE_URL}/get-verification-code`).send(payload).expect(400);
       expect(response.body).toMatchObject({
@@ -73,16 +74,21 @@ describe("User Resource", () => {
     });
 
     // TODO .......
-    // it("should pass if a valid email is sent in the payload", async () => {
-    //   const payload = { email: "samueladetula@gmail.com", code: crypto.randomBytes(3).toString("hex").toUpperCase() };
+    it("should pass if a valid email is sent in the payload", async () => {
+      await models.User.bulkCreate([
+        { firstName: "Samuel", lastName: "Adetula", email: "test1@gmail.com", phone: "08098765432", password: "samuel123", city: "Ogudu", state: "Lagos", userTypes: "user" },
+        { firstName: "lkjkhjghjhk", lastName: "kjhghjk'", email: "test2@gmail.com", phone: "08098765432", password: "samuel123", city: "Ogudu", state: "Lagos", userTypes: "user" },
+      ]);
 
-    //   const response = await request(server).post(`${BASE_URL}/get-verification-code`).send(payload).expect(200);
+      const payload = { email: "test_mail@gmail.com" /* code: crypto.randomBytes(3).toString("hex").toUpperCase() */ };
 
-    //   expect(response.body).toMatchObject({
-    //     success: true,
-    //     message: "Code successfully sent",
-    //   });
-    // });
+      const response = await request(server).post(`${BASE_URL}/get-verification-code`).send(payload).expect(200);
+
+      expect(response.body).toMatchObject({
+        success: true,
+        message: "Code successfully sent",
+      });
+    });
   });
 
   /*****************************************************************************************************************************
@@ -96,15 +102,15 @@ describe("User Resource", () => {
     let signupPayload: UserPayloadWithVerCode;
     beforeEach(() => {
       signupPayload = {
-        firstName: "lkjhgffghj",
-        lastName: "kjhgfghjkj",
-        email: "kjhgdgfhgjhkjl@gmail.com",
+        firstName: "testfirstName",
+        lastName: "testlastName",
+        email: "test_mail@gmail.com",
         phone: "08098765432",
         password: bcrypt.hashSync("dfiuoghk123", 10),
-        city: "hhfhgjhkjl",
-        state: "gfdgfhgjhkjl",
+        city: "testcity",
+        state: "teststate",
         userTypes: "user",
-        verCode: crypto.randomBytes(3).toString("hex").toUpperCase(),
+        verCode: "ADC78Y", //crypto.randomBytes(3).toString("hex").toUpperCase(),
       };
     });
 
@@ -218,48 +224,48 @@ describe("User Resource", () => {
       });
     });
 
-    // it("should fail if the user email and verification code cannot be found", async () => {
-    //   await models.Code.create({ email: "test_email1@gmail.com", code: "ABCDEF" });
+    it("should fail if the user email and verification code cannot be found", async () => {
+      await models.Code.create({ email: "test_email1@gmail.com", code: "ABCDEF" });
 
-    //   const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(400);
+      const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(400);
 
-    //   expect(response.body).toMatchObject({
-    //     success: false,
-    //     error: "Invalid verification code or email",
-    //   });
-    // });
+      expect(response.body).toMatchObject({
+        success: false,
+        error: "Invalid verification code or email",
+      });
+    });
 
-    // it("should fail if the user verification code exceeds 30 minutes", async () => {
-    //   const userVerCode = await models.Code.create({ email: "test_email1@gmail.com", code: crypto.randomBytes(3).toString("hex").toUpperCase() });
+    it("should fail if the user verification code exceeds 30 minutes", async () => {
+      const userVerCode = await models.Code.create({ email: "test_email1@gmail.com", code: crypto.randomBytes(3).toString("hex").toUpperCase() });
 
-    //   const timeDiff = Date.now() - userVerCode.createdAt.getTime();
+      const timeDiff = Date.now() - userVerCode.createdAt.getTime();
 
-    //   if (timeDiff > 30) {
-    //     const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(400);
-    //     expect(response.body).toMatchObject({
-    //       success: false,
-    //       error: "The verification code has expired, please request another one.",
-    //     });
-    //   }
-    // });
+      if (timeDiff > 30) {
+        const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(400);
+        expect(response.body).toMatchObject({
+          success: false,
+          error: "The verification code has expired, please request another one.",
+        });
+      }
+    });
 
-    // it("should fail if the user already exists", async () => {
-    //   await models.User.create({ firstName: "iuytrertyui", lastName: "hgfddfnb", email: "kjhgdgfhgjhkjl@gmail.com", phone: "08098765432", password: bcrypt.hashSync("oiuytsdghjk535", 10), city: "lkjhgffg", state: "jhgfgh", userTypes: "user" });
+    it("should fail if the user already exists", async () => {
+      await models.User.create({ firstName: "iuytrertyui", lastName: "hgfddfnb", email: "test_mail@gmail.com", phone: "08098765432", password: bcrypt.hashSync("oiuytsdghjk535", 10), city: "lkjhgffg", state: "jhgfgh", userTypes: "user" });
 
-    //   const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(400);
-    //   expect(response.body).toMatchObject({
-    //     success: false,
-    //     error: "User with this email and/or phone number already exists.",
-    //   });
-    // });
+      const response = await request(server).post(`${BASE_URL}/signup`).send(signupPayload).expect(400);
+      expect(response.body).toMatchObject({
+        success: false,
+        error: "User with this email and/or phone number already exists.",
+      });
+    });
 
-    // it("should pass if the user supplies all the valid signup details", async () => {
-    //   const response = await request(server).post(`${BASE_URL}signup`).send(signupPayload).expect(200);
-    //   expect(response.body).toMatchObject({
-    //     success: true,
-    //     message: "User successfully created",
-    //   });
-    // });
+    it("should pass if the user supplies all the valid signup details", async () => {
+      const response = await request(server).post(`${BASE_URL}signup`).send(signupPayload).expect(200);
+      expect(response.body).toMatchObject({
+        success: true,
+        message: "User successfully created",
+      });
+    });
 
     /*****************************************************************************************************************************
      *
@@ -278,29 +284,29 @@ describe("User Resource", () => {
         });
       });
 
-      // it("should fail if email supplied in the payload does not exist", async () => {
-      //   await models.User.bulkCreate([{ firstName: "iuytrertyui", lastName: "oijhksdf", email: "kjhgdgfhgjhkjl@gmail.com", phone: "08098765432", password: bcrypt.hashSync("oiuytsdghjk535", 10), city: "lkjhgffg", state: "jhgfgh", userTypes: "user" }]);
+      it("should fail if email supplied in the payload does not exist", async () => {
+        await models.User.bulkCreate([{ firstName: "iuytrertyui", lastName: "oijhksdf", email: "kjhgdgfhgjhkjl@gmail.com", phone: "08098765432", password: bcrypt.hashSync("oiuytsdghjk535", 10), city: "lkjhgffg", state: "jhgfgh", userTypes: "user" }]);
 
-      //   const payload = { email: "test_email@gmail.com", password: "oiuytsdghjk535" };
+        const payload = { email: "test_email@gmail.com", password: "oiuytsdghjk535" };
 
-      //   const response = await request(server).post(`${BASE_URL}/login`).send(payload).expect(400);
-      //   expect(response.body).toMatchObject({
-      //     success: false,
-      //     error: "Sorry, you do not have an account with us",
-      //   });
-      // });
+        const response = await request(server).post(`${BASE_URL}/login`).send(payload).expect(400);
+        expect(response.body).toMatchObject({
+          success: false,
+          error: "Sorry, you do not have an account with us",
+        });
+      });
 
-      // it("should fail if password does not match", async () => {
-      //   await models.User.create({ firstName: "iuytrertyui", lastName: "oijhksdf", email: "kjhgdgfhgjhkjl@gmail.com", phone: "08098765432", password: bcrypt.hashSync("oiuytsdghjk535", 10), city: "lkjhgffg", state: "jhgfgh", userTypes: "user" });
+      it("should fail if password does not match", async () => {
+        await models.User.create({ firstName: "iuytrertyui", lastName: "oijhksdf", email: "kjhgdgfhgjhkjl@gmail.com", phone: "08098765432", password: bcrypt.hashSync("oiuytsdghjk535", 10), city: "lkjhgffg", state: "jhgfgh", userTypes: "user" });
 
-      //   const payload = { email: "kjhgdgfhgjhkjl@gmail.com", password: bcrypt.hashSync("fghiuytrewsdvb", 10) };
+        const payload = { email: "kjhgdgfhgjhkjl@gmail.com", password: bcrypt.hashSync("fghiuytrewsdvb", 10) };
 
-      //   const response = await request(server).post(`${BASE_URL}/login`).send(payload).expect(401);
-      //   expect(response.body).toMatchObject({
-      //     success: false,
-      //     error: "Incorrect Password! Unauthorized",
-      //   });
-      // });
+        const response = await request(server).post(`${BASE_URL}/login`).send(payload).expect(401);
+        expect(response.body).toMatchObject({
+          success: false,
+          error: "Incorrect Password! Unauthorized",
+        });
+      });
     });
   });
 });

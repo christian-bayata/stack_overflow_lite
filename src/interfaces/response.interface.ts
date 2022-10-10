@@ -14,7 +14,9 @@ export interface configureDataInput {
 }
 
 export interface buildResponseOutput {
-  success: boolean;
-  message: string;
-  data: {};
+  res?: any;
+  success?: boolean;
+  message?: string;
+  data?: object;
+  error?: string;
 }

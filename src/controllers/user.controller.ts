@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
 import { AdditionalResponse } from "../interfaces/response.interface";
-import userRepository from "../repositories/userRepositories";
+import userRepository from "../repositories/user.repository";
 import ResponseHandler from "../utils/responseHandler.utils";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import helper from "../utils/helper.utils";
 import { sendEmail } from "../utils/sendMail.utils";
-import esRequestsController from "./esRequest.controller";
-import { esCreateUserDto } from "../extensions/dto/users.dto";
 
 /**
  * @Title User verification code
@@ -17,17 +15,18 @@ import { esCreateUserDto } from "../extensions/dto/users.dto";
  * @Returns Returns the verification code of the user
  *
  */
-const getVerificationCode = async (req: Request, res: AdditionalResponse) => {
+const getVerificationCode = async (req: Request, res: AdditionalResponse): Promise<Response> => {
   const { data } = res;
   const { email } = req.body;
 
   try {
     // Check if user with this email already exists;
     const confirmEmail = await userRepository.findEmail({ email });
-    if (confirmEmail?.email) return ResponseHandler.badRequest({ res, error: "You already have an account with us" });
+    if (confirmEmail) return ResponseHandler.badRequest({ res, error: "You already have an account with us" });
 
     const verCodeData = { email, code: crypto.randomBytes(3).toString("hex").toUpperCase() };
     const userCode = await userRepository.createVerCode(verCodeData);
+    // return await userService.createVerificationCode(res, { email });
 
     return ResponseHandler.success({ res, message: "Code successfully sent", data: userCode });
   } catch (error) {

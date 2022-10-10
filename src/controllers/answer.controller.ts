@@ -2,10 +2,10 @@ import "express-async-errors";
 import { Request, Response, NextFunction } from "express";
 import { AdditionalResponse } from "../interfaces/response.interface";
 import ResponseHandler from "../utils/responseHandler.utils";
-import answerRepository from "../repositories/answerRepositories";
+import answerRepository from "../repositories/answer.repository";
 import { publishToQueue } from "../ext-services/rabbitMq";
-import userRepository from "../repositories/userRepositories";
-import questionRepository from "../repositories/questionRepositories";
+import userRepository from "../repositories/user.repository";
+import questionRepository from "../repositories/question.repository";
 
 const create = async (req: Request, res: AdditionalResponse) => {
   const { user } = res;

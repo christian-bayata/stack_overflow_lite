@@ -22,7 +22,7 @@ class ResponseHandler {
     return helper.buildErrorResponse({ res, status, error });
   }
 
-  public static fatalError({ res, status = 500, error = "Intenal server error" }: configureDataInput) {
+  public static fatalError({ res, status = 500, error = "Internal server error" }: configureDataInput) {
     return helper.buildErrorResponse({ res, status, error });
   }
 }

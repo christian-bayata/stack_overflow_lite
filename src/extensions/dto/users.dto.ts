@@ -1,3 +1,6 @@
+export interface createVerCodeDto {
+  email: string;
+}
 export interface UserSignUpDto {
   id?: number;
   firstName: string;

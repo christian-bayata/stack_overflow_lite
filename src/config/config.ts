@@ -23,7 +23,7 @@ sequelize = new Sequelize(URI, {
 sequelize
   .authenticate()
   .then(() => {
-    console.log("DB connection established successfully");
+    console.log(`DB connection established successfully in ${process.env.NODE_ENV} mode`);
   })
   .catch((err: any) => {
     console.log("Unable to connect to DB", err);

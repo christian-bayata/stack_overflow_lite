@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
 import ResponseHandler from "../utils/responseHandler.utils";
 import { AdditionalResponse } from "../interfaces/response.interface";
-import userRepository from "../repositories/userRepositories";
+import userRepository from "../repositories/user.repository";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "../interfaces/user.interface";
